@@ -17,5 +17,5 @@
     <string name="share_app_subject">סיפור מקומי</string>
     <string name="share_app_body">"סיפור מקומי" היא אפליקציה שחייבים להוריד! הנה לינק: http://www.sipurim.me</string>
     <string name="search_title">Search</string>
-    <string name="search_hint">Search here</string>
+    <string name="search_hint">Search Terms</string>
 </resources>

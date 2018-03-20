@@ -1,6 +1,7 @@
 package com.eviabs.dicts.activities;
 
-import android.app.SearchManager;
+
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,32 +9,40 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.eviabs.dicts.R;
 import com.eviabs.dicts.Utils.Session;
+import com.eviabs.dicts.fragments.SearchResultsFragment;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        SearchView.OnQueryTextListener {
+        NavigationView.OnNavigationItemSelectedListener {
 
     private String TAG = MainActivity.class.getSimpleName();
+
+    private enum FragmentType {
+        Search,
+        Settings
+    };
+    private FragmentType currentShownFragment = FragmentType.Search;
+    static private SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
 
     protected final Context context = this;
 
@@ -68,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -86,9 +96,15 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
+
+        MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (searchView.isSearchOpen()) {
+            searchView.closeSearch();
+        } else if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
@@ -96,19 +112,45 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // menu is hidden, uncomment if needed.
-//        getMenuInflater().inflate(R.menu.menu_base, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem mSearchmenuItem = menu.findItem(R.id.menu_toolbarsearch);
-        SearchView searchView = (SearchView) mSearchmenuItem.getActionView();
-        searchView.setQueryHint(getResources().getString(R.string.search_title));
-        searchView.setOnQueryTextListener(this);
+        MenuItem item = menu.findItem(R.id.action_search);
 
-        Log.d(TAG, "onCreateOptionsMenu: mSearchmenuItem->" + mSearchmenuItem.getActionView());
+        MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        searchView.setMenuItem(item);
+
+        String[] arr = {"11", "12","123"};
+        searchView.setSuggestions(arr);
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //Do some magic
+                search(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Do some magic
+                return false;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                //Do some magic
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                //Do some magic
+            }
+        });
+
+        showFragment(FragmentType.Search);
         return true;
-//        return true;
     }
 
     @Override
@@ -177,16 +219,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
-    /**
-     * Sets the layout Width/Height of the "activity container"
-     * Default is WRAP_CONTENT
-     *
-     * @return
-     */
-    protected int getLayoutWidthHeight() {
-        return ViewGroup.LayoutParams.WRAP_CONTENT;
-    }
 
     /**
      * Shows a long Toast
@@ -296,22 +328,28 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        Log.d(TAG, "onQueryTextSubmit: query->"+query);
-        return true;
+    public void showFragment(FragmentType fragmentType) {
+        //TODO: add settings fragment
+        Fragment fragment = fragmentType == FragmentType.Search ? searchResultsFragment : searchResultsFragment;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_container, fragment);
+        fragmentTransaction.addToBackStack("");
+        fragmentTransaction.commit();
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        Log.d(TAG, "onQueryTextChange: newText->" + newText);
-        showToast(newText);
+    private void search(String query) {
+        // Make sure that the search result fragment is shown
+        switch (currentShownFragment){
+            case Search:
+                break;
+            case Settings:
+                showFragment(FragmentType.Search);
+            default:
+                break;
+        }
 
-        return true;
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
+        // Perform the search
+        searchResultsFragment.search(query);
     }
 }
