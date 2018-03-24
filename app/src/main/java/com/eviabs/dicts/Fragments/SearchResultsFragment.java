@@ -91,8 +91,8 @@ public class SearchResultsFragment extends Fragment {
         containerDictionariesWarningImage.setVisibility(View.GONE);
         containerDictionariesWarningText.setVisibility(View.GONE);
 
-//        searchUrbanDictionaryAsync(query);
-//        searchWikipediaAsync(query);
+        searchUrbanDictionaryAsync(query);
+        searchWikipediaAsync(query);
         morfixWikipediaAsync(query);
     }
 
@@ -139,15 +139,25 @@ public class SearchResultsFragment extends Fragment {
                         break;
 
                     default:
-                        break;
+                        containerImagesWarningImage.setImageResource(R.drawable.server_error);
+                        containerImagesWarningText.setText(getResources().getString(R.string.images_warning_server_error));
+
+                        if (qwantRecyclerView != null) {
+                            qwantRecyclerView.setVisibility(View.GONE);
+                        }
                 }
 
             }
 
             @Override
             public void onFailure(Call<QwantImageResults> call, Throwable t) {
-                ((MainActivity) getActivity()).showToast("error");
-                //
+                containerImagesWarningImage.setImageResource(R.drawable.server_error);
+                containerImagesWarningText.setText(getResources().getString(R.string.images_warning_server_error));
+
+                if (qwantRecyclerView != null) {
+                    qwantRecyclerView.setVisibility(View.GONE);
+                }
+
             }
         });
     }
@@ -217,7 +227,7 @@ public class SearchResultsFragment extends Fragment {
 
     private Retrofit getRetrofit() {
         Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://web-dicts.herokuapp.com/")
+                .baseUrl(SERVER_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create());
         return builder.build();
     }

@@ -99,25 +99,26 @@
                     />
             </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_card_wikipedia_term"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_card_morfix_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_card_urban_dictionary_term"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_card_wikipedia_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
 
-            />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_card_urban_dictionary_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_card_morfix_term"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
 
-            />
+
         </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

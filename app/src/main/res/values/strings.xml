@@ -24,8 +24,11 @@
     <!--Images search warning-->
     <string name="images_warning_search"> </string>
     <string name="images_warning_no_images">No images found</string>
+    <string name="images_warning_loading_error">Could not load image</string>
     <string name="images_warning_searching">Searching...</string>
 
     <!--Dictionaries search warning-->
     <string name="dictionaries_warning_search">Ready to search</string>
+    <string name="images_warning_loading">Loading...</string>
+    <string name="images_warning_server_error">Oops...</string>
 </resources>

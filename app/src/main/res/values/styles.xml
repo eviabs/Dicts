@@ -27,7 +27,7 @@
         <item name="searchBackground">@color/colorPrimary</item>
 
         <!-- Change voice icon -->
-        <item name="searchVoiceIcon">@drawable/ic_action_voice_search_inverted</item>
+        <!--<item name="searchVoiceIcon">@drawable/ic_action_voice_search_inverted</item>-->
 
         <!-- Change clear text icon -->
         <item name="searchCloseIcon">@drawable/ic_action_navigation_close_inverted</item>
@@ -61,15 +61,27 @@
     </style>
 
     <style name="CardUrbanTermStyle" parent="CardTermStyle">
-        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="CardMorfixTermStyle" parent="CardTermStyle">
-        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:fontFamily">sans-serif</item>
+
     </style>
 
     <style name="CardWikipediaTermStyle" parent="CardTermStyle">
-        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
+
+    <style name="StrongDivider">
+        <item name="android:background">@color/colorMorfixTitleDivider</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">0.70000005dip</item>
+        <item name="android:layout_marginTop">10.0dip</item>
+        <item name="android:layout_marginBottom">5.0dip</item>
+        <!--<item name="android:layout_marginStart">@dimen/card_margin</item>-->
+        <!--<item name="android:layout_marginEnd">@dimen/card_margin</item>-->
+
+    </style>
 </resources>

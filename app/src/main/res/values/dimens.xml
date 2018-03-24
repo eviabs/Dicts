@@ -5,8 +5,12 @@
     <dimen name="nav_header_height">160dp</dimen>
 
     <dimen name="dictionary_icon_size">50dp</dimen>
+    <dimen name="card_margin">15dp</dimen>
+    <dimen name="card_padding">25dp</dimen>
+    <dimen name="card_padding_small">15dp</dimen>
+
     <dimen name="toolbar_header_height">55dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="filter_fragment_element_margin">5dp</dimen>
     <dimen name="listview_item_image_margin">5dp</dimen>
+
 </resources>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -17,20 +18,36 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import com.eviabs.dicts.ApiClients.ApiConsts;
+import com.eviabs.dicts.ApiClients.AutocompleteClient;
 import com.eviabs.dicts.Fragments.SearchResultsFragment;
 import com.eviabs.dicts.R;
 import com.eviabs.dicts.Utils.Session;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.security.spec.RSAOtherPrimeInfo;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -42,13 +59,15 @@ public class MainActivity extends AppCompatActivity implements
         Settings
     };
     private FragmentType currentShownFragment = FragmentType.Search;
-    static private SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
+    final private SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
 
-    protected final Context context = this;
+    private MaterialSearchView searchView = null;
 
-    protected Snackbar snackbar = null;
+    private final Context context = this;
 
-    protected static Session session = null;
+    private Snackbar snackbar = null;
+
+    private static Session session = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +89,14 @@ public class MainActivity extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        searchView = (MaterialSearchView) findViewById(R.id.search_view);
+
 
         // Set session
         if (session == null) {
             session = new Session(context);
         }
     }
-
 
     @Override
     protected void onResume() {
@@ -97,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         //TODO: FIX backpress when only 1 item in backstack
-        MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (searchView.isSearchOpen()) {
             searchView.closeSearch();
@@ -116,23 +135,26 @@ public class MainActivity extends AppCompatActivity implements
 
         MenuItem item = menu.findItem(R.id.action_search);
 
-        MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        searchView.setMenuItem(item);
+        final MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        //TODO: Voice icon isn't showing up, that's a bug in MaterialSearchView. Consider replace it.
+        searchView.setVoiceSearch(true);
 
-        String[] arr = {"11", "12","123"};
-        searchView.setSuggestions(arr);
+        searchView.setMenuItem(item);
 
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //Do some magic
                 search(query);
+
+                // return true if you don't want dismiss the search bar
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Do some magic
+                setSuggestions(newText);
+
+                // return true if you don't want dismiss the search bar
                 return false;
             }
         });
@@ -146,11 +168,65 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSearchViewClosed() {
                 //Do some magic
+
             }
         });
 
         showFragment(FragmentType.Search);
         return true;
+    }
+
+    private void setSuggestions(String term) {
+        // don't search the web if string is too short
+        if (term != null && term.length() > 1) {
+
+            // clear old suggestions
+            searchView.setSuggestions(new String[] {});
+
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl(AutocompleteClient.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create());
+
+            AutocompleteClient client = builder.build().create(AutocompleteClient.class);
+            Call<ResponseBody> call = client.getSuggestions(term, AutocompleteClient.CLIENT_JSON, AutocompleteClient.LANGUAGE);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        searchView.setSuggestions(responseToArrayOfSuggestions(response.body().string()));
+                    } catch (IOException ex) {
+                        // do nothing
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.d(TAG, t.getMessage());
+                }
+
+                private String[] responseToArrayOfSuggestions(String body) throws IOException {
+                    // clean the response and split to array of strings
+                    String cleanedBodyStr = body.replaceAll(AutocompleteClient.BAD_CHARS, "");
+                    String[] arrSuggestions = cleanedBodyStr.split(AutocompleteClient.DELIMITER);
+
+                    // remove the first (and duplicate) result
+                    if (arrSuggestions.length > 0) {
+                        arrSuggestions = Arrays.copyOfRange(arrSuggestions, 1, arrSuggestions.length);
+                    }
+
+                    // force max num of suggestions
+                    if (arrSuggestions.length > ApiConsts.NUM_OF_SUGGESTIONS) {
+                        arrSuggestions = Arrays.copyOfRange(arrSuggestions, 0, ApiConsts.NUM_OF_SUGGESTIONS);
+                    }
+
+                    // sort and return
+                    Arrays.sort(arrSuggestions);
+
+                    return arrSuggestions;
+                }
+            });
+        }
     }
 
     @Override
@@ -351,5 +427,21 @@ public class MainActivity extends AppCompatActivity implements
 
         // Perform the search
         searchResultsFragment.search(query);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if (matches != null && matches.size() > 0) {
+                String searchWrd = matches.get(0);
+                if (!TextUtils.isEmpty(searchWrd)) {
+                    searchView.setQuery(searchWrd, false);
+                }
+            }
+
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
