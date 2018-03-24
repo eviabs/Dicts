@@ -16,6 +16,16 @@
     <string name="share_via">Share via:</string>
     <string name="share_app_subject">סיפור מקומי</string>
     <string name="share_app_body">"סיפור מקומי" היא אפליקציה שחייבים להוריד! הנה לינק: http://www.sipurim.me</string>
+
+    <!--Search Bar-->
     <string name="search_title">Search</string>
     <string name="search_hint">Search Terms</string>
+
+    <!--Images search warning-->
+    <string name="images_warning_search"> </string>
+    <string name="images_warning_no_images">No images found</string>
+    <string name="images_warning_searching">Searching...</string>
+
+    <!--Dictionaries search warning-->
+    <string name="dictionaries_warning_search">Ready to search</string>
 </resources>

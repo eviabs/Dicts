@@ -1,13 +1,32 @@
-package com.eviabs.dicts.Dictionaries;
+package com.eviabs.dicts.Dictionaries.UrbanDictionary;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class UrbanDictionaryTerm {
+    @SerializedName("definition")
+    @Expose
+    private String definition;
 
-    String definition;
-    String word;
-    long thumbs_up;
-    long thumbs_down;
-    String author;
-    String example;
+    @SerializedName("word")
+    @Expose
+    private String word;
+
+    @SerializedName("thumbs_up")
+    @Expose
+    private long thumbs_up;
+
+    @SerializedName("thumbs_down")
+    @Expose
+    private long thumbs_down;
+
+    @SerializedName("author")
+    @Expose
+    private String author;
+
+    @SerializedName("example")
+    @Expose
+    private String example;
 
     public UrbanDictionaryTerm(String definition, String word, long thumbs_up, long thumbs_down, String author, String example) {
         this.definition = definition;

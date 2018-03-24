@@ -6,6 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--<item name="android:background">@color/colorUrbanTitle</item>-->
+        <!--<item name="android:windowBackground">@color/colorUrbanTitle</item>-->
+        <!--<item name="android:colorBackground">@color/colorAppBackground</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -17,7 +21,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
-
+    <!--Search bar-->
     <style name="MaterialSearchViewStyle">
         <!-- Background for the search bar -->
         <item name="searchBackground">@color/colorPrimary</item>
@@ -46,4 +50,26 @@
         <!-- Hint for edit text -->
         <item name="android:hint">@string/search_hint</item>
     </style>
+
+    <!--Terms Cards-->
+    <style name="CardTermStyle">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">20dp</item>
+    </style>
+
+    <style name="CardUrbanTermStyle" parent="CardTermStyle">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="CardMorfixTermStyle" parent="CardTermStyle">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="CardWikipediaTermStyle" parent="CardTermStyle">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
 </resources>

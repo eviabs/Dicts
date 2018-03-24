@@ -1,14 +1,21 @@
-package com.eviabs.dicts.Dictionaries;
+package com.eviabs.dicts.Dictionaries.Qwant;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class QwantImage {
+    @SerializedName("media")
+    @Expose
     private String media;
+
+    @SerializedName("thumbnail")
+    @Expose
     private String thumbnail;
 
     public QwantImage(String media, String thumbnail) {
         this.media = media;
         this.thumbnail = thumbnail;
     }
-
 
     public String getMedia() {
         return this.media;

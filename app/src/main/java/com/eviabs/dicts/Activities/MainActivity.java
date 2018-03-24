@@ -1,7 +1,6 @@
-package com.eviabs.dicts.activities;
+package com.eviabs.dicts.Activities;
 
 
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -23,9 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.eviabs.dicts.Fragments.SearchResultsFragment;
 import com.eviabs.dicts.R;
 import com.eviabs.dicts.Utils.Session;
-import com.eviabs.dicts.fragments.SearchResultsFragment;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.HashSet;
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-
+        //TODO: FIX backpress when only 1 item in backstack
         MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (searchView.isSearchOpen()) {
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param buttonTxt      The text on button
      * @param buttonListener The on OnClickListener
      */
-    protected void showSnack(String text, int length, String buttonTxt, View.OnClickListener buttonListener) {
+    public void showSnack(String text, int length, String buttonTxt, View.OnClickListener buttonListener) {
         dismissSnack();
         View parentLayout = findViewById(android.R.id.content);
         snackbar = Snackbar.make(parentLayout, text, length)
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param length    the length
      * @param buttonTxt The text on button
      */
-    protected void showSnack(String text, int length, String buttonTxt) {
+    public void showSnack(String text, int length, String buttonTxt) {
         dismissSnack();
         View parentLayout = findViewById(android.R.id.content);
         snackbar = Snackbar.make(parentLayout, text, length)
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Dismiss the active Snackbar
      */
-    protected void dismissSnack() {
+    public void dismissSnack() {
         if (snackbar != null) {
             snackbar.dismiss();
         }
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
      *
      * @param msg the Toast's message
      */
-    protected void showToast(String msg) {
+    public void showToast(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements
      *
      * @return an array of permissions
      */
-    protected String[] getRequiredPermissions() {
+    public String[] getRequiredPermissions() {
         String[] permissions = null;
         try {
             permissions = getPackageManager().getPackageInfo(getPackageName(),
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements
      * @return an array of permissions
      */
     @NonNull
-    protected String[] requiredPermissionsStillNeeded() {
+    public String[] requiredPermissionsStillNeeded() {
 
         Set<String> permissions = new HashSet<String>();
         for (String permission : getRequiredPermissions()) {
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * The default share functionality
      */
-    protected void share() {
+    public void share() {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_app_subject));
@@ -291,14 +291,14 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * The default send functionality
      */
-    protected void send() {
+    public void send() {
         share();
     }
 
     /**
      * The default refresh functionality
      */
-    protected void refresh() {
+    public void refresh() {
         // Do nothing
     }
 

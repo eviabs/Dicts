@@ -1,20 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.eviabs.dicts.fragments.SearchResultsFragment"
-    tools:showIn="@layout/activity_main">
+<android.support.v4.widget.NestedScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/frag_txt"
-        android:layout_width="wrap_content"
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</android.support.constraint.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/container_images"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:id="@+id/container_images_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageView
+                    android:id="@+id/container_images_warning_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/images"
+                    android:gravity="center"
+                    android:padding="20dp"
+                    />
+
+                <TextView
+                    android:id="@+id/container_images_warning_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/images_warning_search"
+                    android:gravity="center"
+                    android:textColor="@color/colorGrey"
+                    android:layout_alignBottom="@id/container_images_warning_image"
+
+
+                    />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_list_images"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+
+                />
+        </LinearLayout>
+
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/separator_shadow"
+
+        />
+
+        <LinearLayout
+            android:id="@+id/container_dictionaries"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/container_dictionaries_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageView
+                    android:id="@+id/container_dictionaries_warning_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:src="@drawable/search"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:id="@+id/container_dictionaries_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dictionaries_warning_search"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="28sp"
+                    android:textColor="@color/colorGrey"
+
+
+                    />
+            </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_card_wikipedia_term"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_card_urban_dictionary_term"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_card_morfix_term"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
