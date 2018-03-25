@@ -115,7 +115,7 @@ public class SearchResultsFragment extends Fragment {
         call.enqueue(new Callback<QwantImageResults>() {
             @Override
             public void onResponse(Call<QwantImageResults> call, Response<QwantImageResults> response) {
-                qwantImagesAdapter = new QwantImagesAdapter(response.body());
+                qwantImagesAdapter = new QwantImagesAdapter(getActivity(), response.body());
                 setupRecyclerView(qwantRecyclerView, R.id.recycler_view_list_images, qwantImagesAdapter, LinearLayoutManager.HORIZONTAL);
 
                 switch (response.body().getError()){

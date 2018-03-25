@@ -18,6 +18,11 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -35,5 +40,6 @@ dependencies {
     compile 'com.ms-square:expandableTextView:0.1.4'
     compile 'com.github.stfalcon:frescoimageviewer:0.5.0'
     implementation 'com.facebook.fresco:fresco:1.8.1'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
 
 }
