@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
         Settings
     };
     private FragmentType currentShownFragment = FragmentType.Search;
-    final private SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
+    final protected SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
 
     private MaterialSearchView searchView = null;
 

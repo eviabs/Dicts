@@ -30,5 +30,8 @@
     <!--Dictionaries search warning-->
     <string name="dictionaries_warning_search">Ready to search</string>
     <string name="images_warning_loading">Loading...</string>
-    <string name="images_warning_server_error">Oops...</string>
+    <string name="images_warning_server_error">Oops... Something went wrong</string>
+    <string name="dictionaries_error_no_results">Nothing found</string>
+    <string name="retry">retry</string>
+    <string name="dictionaries_error_searching">Searching...</string>
 </resources>

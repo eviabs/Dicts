@@ -92,11 +92,11 @@ public class SearchResultsFragment extends Fragment {
         containerDictionariesWarningText.setVisibility(View.GONE);
 
         searchUrbanDictionaryAsync(query);
-        searchWikipediaAsync(query);
-        morfixWikipediaAsync(query);
+//        searchWikipediaAsync(query);
+//        morfixWikipediaAsync(query);
     }
 
-    private void searchQwantImagesAsync(String term, int count) {
+    private void searchQwantImagesAsync(final String term, int count) {
         Retrofit retrofit = getRetrofit();
         QwantImageClient client = retrofit.create(QwantImageClient.class);
         Call<QwantImageResults> call = client.getImages(term, count);
@@ -162,17 +162,28 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
-    private void searchUrbanDictionaryAsync(String term) {
+    private void searchUrbanDictionaryAsync(final String term) {
         Retrofit retrofit = getRetrofit();
         UrbanDictionaryClient client = retrofit.create(UrbanDictionaryClient.class);
         Call<UrbanDictionaryResults> call = client.getDefinitions(term);
 
+        final View.OnClickListener retryClick = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                searchUrbanDictionaryAsync(term);
+            }
+        };
+
+
+        urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(getActivity(), null, retryClick);
+        setupRecyclerView(urbanDictionaryRecyclerView, R.id.recycler_view_card_urban_dictionary_term, urbanDictionaryTermAdapter, LinearLayoutManager.VERTICAL);
+
         call.enqueue(new Callback<UrbanDictionaryResults>() {
             @Override
             public void onResponse(Call<UrbanDictionaryResults> call, Response<UrbanDictionaryResults> response) {
-                urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(response.body());
+                urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(getActivity(), response.body(), retryClick);
                 setupRecyclerView(urbanDictionaryRecyclerView, R.id.recycler_view_card_urban_dictionary_term, urbanDictionaryTermAdapter, LinearLayoutManager.VERTICAL);
-
             }
 
             @Override
@@ -183,7 +194,7 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
-    private void searchWikipediaAsync(String term) {
+    private void searchWikipediaAsync(final String term) {
         Retrofit retrofit = getRetrofit();
         WikipediaClient client = retrofit.create(WikipediaClient.class);
         Call<WikipediaResults> call = client.getDefinition(term);
@@ -204,7 +215,7 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
-    private void morfixWikipediaAsync(String term) {
+    private void morfixWikipediaAsync(final String term) {
         Retrofit retrofit = getRetrofit();
         MorfixClient client = retrofit.create(MorfixClient.class);
         Call<MorfixResults> call = client.getDefinitions(term);
