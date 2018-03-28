@@ -13,7 +13,10 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="listview_item_image_margin">5dp</dimen>
 
+    <!--Search results-->
+    <dimen name="images_container_height">140dp</dimen>
+
     <!-- Card warning info-->
-    <dimen name="card_warning_info_image_size_width">200dp</dimen>
-    <dimen name="card_warning_info_image_size_height">120dp</dimen>
+    <dimen name="image_small_height">90dp</dimen>
+    <dimen name="image_height">100dp</dimen>
 </resources>

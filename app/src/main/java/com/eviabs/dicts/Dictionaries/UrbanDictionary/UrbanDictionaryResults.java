@@ -1,16 +1,13 @@
 package com.eviabs.dicts.Dictionaries.UrbanDictionary;
 
+import com.eviabs.dicts.Dictionaries.Results;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UrbanDictionaryResults {
-    @SerializedName("error")
-    @Expose
-    private int error;
-
+public class UrbanDictionaryResults extends Results {
     @SerializedName("result_type")
     @Expose
     private String result_type;
@@ -24,18 +21,10 @@ public class UrbanDictionaryResults {
     private List<String> sounds;
 
     public UrbanDictionaryResults(int error, String result_type, List<UrbanDictionaryTerm> list, List<String> sounds) {
-        this.error = error;
+        super(error);
         this.result_type = result_type;
         this.list = list;
         this.sounds = sounds;
-    }
-
-    public int getError() {
-        return error;
-    }
-
-    public void setError(int error) {
-        this.error = error;
     }
 
     public String getResult_type() {
@@ -60,5 +49,10 @@ public class UrbanDictionaryResults {
 
     public void setSounds(List<String> sounds) {
         this.sounds = sounds;
+    }
+
+    @Override
+    public int getCount() {
+        return this.getList().size();
     }
 }

@@ -22,7 +22,7 @@
     <string name="search_hint">Search Terms</string>
 
     <!--Images search warning-->
-    <string name="images_warning_search"> </string>
+    <string name="images_warning_search">Images</string>
     <string name="images_warning_no_images">No images found</string>
     <string name="images_warning_loading_error">Could not load image</string>
     <string name="images_warning_searching">Searching...</string>
@@ -34,4 +34,6 @@
     <string name="dictionaries_error_no_results">Nothing found</string>
     <string name="retry">retry</string>
     <string name="dictionaries_error_searching">Searching...</string>
+    <string name="urban_dictionary_by">by</string>
+    <string name="description_image_icon">Icon</string>
 </resources>

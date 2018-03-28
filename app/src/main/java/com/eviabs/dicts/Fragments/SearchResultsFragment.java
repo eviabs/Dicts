@@ -18,6 +18,7 @@ import com.eviabs.dicts.Adapters.MorfixTermAdapter;
 import com.eviabs.dicts.Adapters.QwantImagesAdapter;
 import com.eviabs.dicts.Adapters.UrbanDictionaryTermAdapter;
 import com.eviabs.dicts.Adapters.WikipediaTermAdapter;
+import com.eviabs.dicts.ApiClients.ApiConsts;
 import com.eviabs.dicts.ApiClients.MorfixClient;
 import com.eviabs.dicts.ApiClients.QwantImageClient;
 import com.eviabs.dicts.ApiClients.UrbanDictionaryClient;
@@ -56,7 +57,8 @@ public class SearchResultsFragment extends Fragment {
     private MorfixTermAdapter morfixTermAdapter = null;
     private RecyclerView morfixRecyclerView = null;
 
-    private RelativeLayout containerImagesWarningLayout = null;
+    private LinearLayout containerImagesWarningLayout = null;
+    private LinearLayout containerImagesRecyclerLayout = null;
     private ImageView containerImagesWarningImage = null;
     private TextView containerImagesWarningText = null;
 
@@ -74,12 +76,14 @@ public class SearchResultsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_search_results, container, false);
 
         containerImagesWarningLayout = view.findViewById(R.id.container_images_warning);
+        containerImagesRecyclerLayout = view.findViewById(R.id.container_recycler_view_list_images);
         containerImagesWarningImage = view.findViewById(R.id.container_images_warning_image);
         containerImagesWarningText = view.findViewById(R.id.container_images_warning_text);
 
         containerDictionariesWarningLayout = view.findViewById(R.id.container_dictionaries_warning);
         containerDictionariesWarningImage = view.findViewById(R.id.container_dictionaries_warning_image);
         containerDictionariesWarningText = view.findViewById(R.id.container_dictionaries_text);
+
         return view;
     }
 
@@ -92,8 +96,8 @@ public class SearchResultsFragment extends Fragment {
         containerDictionariesWarningText.setVisibility(View.GONE);
 
         searchUrbanDictionaryAsync(query);
-//        searchWikipediaAsync(query);
-//        morfixWikipediaAsync(query);
+        searchWikipediaAsync(query);
+        searchMorfixAsync(query);
     }
 
     private void searchQwantImagesAsync(final String term, int count) {
@@ -102,12 +106,7 @@ public class SearchResultsFragment extends Fragment {
         Call<QwantImageResults> call = client.getImages(term, count);
 
         containerImagesWarningLayout.setVisibility(View.VISIBLE);
-        containerImagesWarningImage.setVisibility(View.VISIBLE);
-        containerImagesWarningText.setVisibility(View.VISIBLE);
-
-        if (qwantRecyclerView != null) {
-            qwantRecyclerView.setVisibility(View.GONE);
-        }
+        containerImagesRecyclerLayout.setVisibility(View.GONE);
 
         containerImagesWarningImage.setImageResource(R.drawable.searching_images);
         containerImagesWarningText.setText(getResources().getString(R.string.images_warning_searching));
@@ -119,45 +118,36 @@ public class SearchResultsFragment extends Fragment {
                 setupRecyclerView(qwantRecyclerView, R.id.recycler_view_list_images, qwantImagesAdapter, LinearLayoutManager.HORIZONTAL);
 
                 switch (response.body().getError()){
+
                     case ERROR_CODE_NO_ERROR:
                         containerImagesWarningLayout.setVisibility(View.GONE);
-                        containerImagesWarningImage.setVisibility(View.GONE);
-                        containerImagesWarningText.setVisibility(View.GONE);
-
-                        if (qwantRecyclerView != null) {
-                            qwantRecyclerView.setVisibility(View.VISIBLE);
-                        }
+                        containerImagesRecyclerLayout.setVisibility(View.VISIBLE);
                         break;
 
                     case ERROR_CODE_NO_RESULTS:
+                        containerImagesWarningLayout.setVisibility(View.VISIBLE);
+                        containerImagesRecyclerLayout.setVisibility(View.GONE);
+
                         containerImagesWarningImage.setImageResource(R.drawable.no_images_found);
                         containerImagesWarningText.setText(getResources().getString(R.string.images_warning_no_images));
-
-                        if (qwantRecyclerView != null) {
-                            qwantRecyclerView.setVisibility(View.GONE);
-                        }
                         break;
 
                     default:
+                        containerImagesWarningLayout.setVisibility(View.VISIBLE);
+                        containerImagesRecyclerLayout.setVisibility(View.GONE);
+
                         containerImagesWarningImage.setImageResource(R.drawable.server_error);
                         containerImagesWarningText.setText(getResources().getString(R.string.images_warning_server_error));
-
-                        if (qwantRecyclerView != null) {
-                            qwantRecyclerView.setVisibility(View.GONE);
-                        }
                 }
-
             }
 
             @Override
             public void onFailure(Call<QwantImageResults> call, Throwable t) {
+                containerImagesWarningLayout.setVisibility(View.VISIBLE);
+                containerImagesRecyclerLayout.setVisibility(View.GONE);
+
                 containerImagesWarningImage.setImageResource(R.drawable.server_error);
                 containerImagesWarningText.setText(getResources().getString(R.string.images_warning_server_error));
-
-                if (qwantRecyclerView != null) {
-                    qwantRecyclerView.setVisibility(View.GONE);
-                }
-
             }
         });
     }
@@ -175,8 +165,7 @@ public class SearchResultsFragment extends Fragment {
             }
         };
 
-
-        urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(getActivity(), null, retryClick);
+        urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SEARCHING, retryClick);
         setupRecyclerView(urbanDictionaryRecyclerView, R.id.recycler_view_card_urban_dictionary_term, urbanDictionaryTermAdapter, LinearLayoutManager.VERTICAL);
 
         call.enqueue(new Callback<UrbanDictionaryResults>() {
@@ -188,8 +177,8 @@ public class SearchResultsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<UrbanDictionaryResults> call, Throwable t) {
-                ((MainActivity) getActivity()).showToast("error");
-                //
+                urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
+                setupRecyclerView(urbanDictionaryRecyclerView, R.id.recycler_view_card_urban_dictionary_term, urbanDictionaryTermAdapter, LinearLayoutManager.VERTICAL);
             }
         });
     }
@@ -199,39 +188,63 @@ public class SearchResultsFragment extends Fragment {
         WikipediaClient client = retrofit.create(WikipediaClient.class);
         Call<WikipediaResults> call = client.getDefinition(term);
 
+        final View.OnClickListener retryClick = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                searchWikipediaAsync(term);
+            }
+        };
+
+        wikipediaTermAdapter = new WikipediaTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SEARCHING, retryClick);
+        setupRecyclerView(wikipediaRecyclerView, R.id.recycler_view_card_wikipedia_term, wikipediaTermAdapter, LinearLayoutManager.VERTICAL);
+
         call.enqueue(new Callback<WikipediaResults>() {
             @Override
             public void onResponse(Call<WikipediaResults> call, Response<WikipediaResults> response) {
-                wikipediaTermAdapter = new WikipediaTermAdapter(response.body());
+                wikipediaTermAdapter = new WikipediaTermAdapter(getActivity(), response.body(), retryClick);
                 setupRecyclerView(wikipediaRecyclerView, R.id.recycler_view_card_wikipedia_term, wikipediaTermAdapter, LinearLayoutManager.VERTICAL);
 
             }
 
             @Override
             public void onFailure(Call<WikipediaResults> call, Throwable t) {
-                ((MainActivity) getActivity()).showToast("error");
-                //
+                wikipediaTermAdapter = new WikipediaTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
+                setupRecyclerView(wikipediaRecyclerView, R.id.recycler_view_card_wikipedia_term, wikipediaTermAdapter, LinearLayoutManager.VERTICAL);
+
             }
         });
     }
 
-    private void morfixWikipediaAsync(final String term) {
+    private void searchMorfixAsync(final String term) {
         Retrofit retrofit = getRetrofit();
         MorfixClient client = retrofit.create(MorfixClient.class);
         Call<MorfixResults> call = client.getDefinitions(term);
 
+        final View.OnClickListener retryClick = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                searchMorfixAsync(term);
+            }
+        };
+
+        morfixTermAdapter = new MorfixTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SEARCHING, retryClick);
+        setupRecyclerView(morfixRecyclerView, R.id.recycler_view_card_morfix_term, morfixTermAdapter, LinearLayoutManager.VERTICAL);
+
         call.enqueue(new Callback<MorfixResults>() {
             @Override
             public void onResponse(Call<MorfixResults> call, Response<MorfixResults> response) {
-                morfixTermAdapter = new MorfixTermAdapter(response.body());
+                morfixTermAdapter = new MorfixTermAdapter(getActivity(), response.body(), retryClick);
                 setupRecyclerView(morfixRecyclerView, R.id.recycler_view_card_morfix_term, morfixTermAdapter, LinearLayoutManager.VERTICAL);
 
             }
 
             @Override
             public void onFailure(Call<MorfixResults> call, Throwable t) {
-                ((MainActivity) getActivity()).showToast("error");
-                //
+                morfixTermAdapter = new MorfixTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
+                setupRecyclerView(morfixRecyclerView, R.id.recycler_view_card_morfix_term, morfixTermAdapter, LinearLayoutManager.VERTICAL);
+
             }
         });
     }
@@ -252,7 +265,7 @@ public class SearchResultsFragment extends Fragment {
             recyclerView.setAdapter(adapter);
             recyclerView.setNestedScrollingEnabled(false);
         } else {
-            qwantRecyclerView.swapAdapter(qwantImagesAdapter, false);
+            recyclerView.swapAdapter(adapter, false);
         }
     }
 }
