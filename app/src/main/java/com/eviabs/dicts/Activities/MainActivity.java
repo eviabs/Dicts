@@ -4,6 +4,7 @@ package com.eviabs.dicts.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -23,19 +24,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.eviabs.dicts.ApiClients.ApiConsts;
 import com.eviabs.dicts.ApiClients.AutocompleteClient;
 import com.eviabs.dicts.Fragments.SearchResultsFragment;
+import com.eviabs.dicts.Fragments.SettingsFragment;
 import com.eviabs.dicts.R;
-import com.eviabs.dicts.Utils.Session;
+import com.eviabs.dicts.Utils.LocalPreferences;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.security.spec.RSAOtherPrimeInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -49,8 +49,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private String TAG = MainActivity.class.getSimpleName();
 
@@ -58,8 +57,12 @@ public class MainActivity extends AppCompatActivity implements
         Search,
         Settings
     };
+
+    private boolean fragmentsSetUp = false;
+
     private FragmentType currentShownFragment = FragmentType.Search;
-    final protected SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
+    final private SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
+    final private SettingsFragment settingsFragment = new SettingsFragment();
 
     private MaterialSearchView searchView = null;
 
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private Snackbar snackbar = null;
 
-    private static Session session = null;
+    private LocalPreferences localPreferences = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +95,13 @@ public class MainActivity extends AppCompatActivity implements
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
 
 
-        // Set session
-        if (session == null) {
-            session = new Session(context);
+        // Set localPreferences
+        if (localPreferences == null) {
+            localPreferences = new LocalPreferences(context);
         }
+
+        setupFragments();
+        showFragment(FragmentType.Search);
     }
 
     @Override
@@ -116,14 +122,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        //TODO: FIX backpress when only 1 item in backstack
+        // first close drawer, then close search bar, then go back to search fragment, and lastly
+        // go use default behavior
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (searchView.isSearchOpen()) {
             searchView.closeSearch();
         } else if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
+        } else if (currentShownFragment == FragmentType.Settings) {
+            showFragment(FragmentType.Search);
         } else {
             super.onBackPressed();
         }
@@ -172,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        showFragment(FragmentType.Search);
         return true;
     }
 
@@ -216,8 +223,8 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     // force max num of suggestions
-                    if (arrSuggestions.length > ApiConsts.NUM_OF_SUGGESTIONS) {
-                        arrSuggestions = Arrays.copyOfRange(arrSuggestions, 0, ApiConsts.NUM_OF_SUGGESTIONS);
+                    if (arrSuggestions.length > getLocalPreferences().getNumOfSuggestions()) {
+                        arrSuggestions = Arrays.copyOfRange(arrSuggestions, 0, getLocalPreferences().getNumOfSuggestions());
                     }
 
                     // sort and return
@@ -386,13 +393,10 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            this.showToast("home");
-
-        } else if (id == R.id.nav_logout) {
-            this.showToast("logout");
+            showFragment(FragmentType.Search);
 
         } else if (id == R.id.nav_manage) {
-            this.showToast("manage");
+            showFragment(FragmentType.Settings);
 
         } else if (id == R.id.nav_share) {
             share();
@@ -401,20 +405,41 @@ public class MainActivity extends AppCompatActivity implements
             send();
 
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     public void showFragment(FragmentType fragmentType) {
-        //TODO: add settings fragment
-        Fragment fragment = fragmentType == FragmentType.Search ? searchResultsFragment : searchResultsFragment;
+        currentShownFragment = fragmentType;
+        Fragment fragmentToShow = fragmentType == FragmentType.Search ? searchResultsFragment : settingsFragment;
+        Fragment fragmentToHide = fragmentType != FragmentType.Search ? searchResultsFragment : settingsFragment;
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_container, fragment);
-        fragmentTransaction.addToBackStack("");
+
+        fragmentTransaction.hide(fragmentToHide);
+        fragmentTransaction.show(fragmentToShow);
         fragmentTransaction.commit();
     }
 
+    public void setupFragments() {
+        if (!fragmentsSetUp) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            fragmentTransaction.add(R.id.main_container, searchResultsFragment);
+            fragmentTransaction.add(R.id.main_container, settingsFragment);
+            fragmentTransaction.commit();
+            fragmentsSetUp = true;
+        }
+    }
+
     private void search(String query) {
+        // Notify user if no internet connection is available
+        notifyIfOffline();
+
         // Make sure that the search result fragment is shown
         switch (currentShownFragment){
             case Search:
@@ -443,5 +468,17 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void notifyIfOffline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (!(cm !=null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting()))
+        {
+            showSnack(getResources().getString(R.string.no_internet_connection), Snackbar.LENGTH_INDEFINITE, getResources().getString(R.string.dismiss));
+        }
+    }
+
+    public LocalPreferences getLocalPreferences() {
+        return localPreferences;
     }
 }

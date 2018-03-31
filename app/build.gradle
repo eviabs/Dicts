@@ -41,5 +41,8 @@ dependencies {
     compile 'com.github.stfalcon:frescoimageviewer:0.5.0'
     implementation 'com.facebook.fresco:fresco:1.8.1'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
+    compile 'com.github.travijuu:numberpicker:1.0.7'
+    compile 'com.takisoft.fix:preference-v7:26.1.0.0'
+
 
 }

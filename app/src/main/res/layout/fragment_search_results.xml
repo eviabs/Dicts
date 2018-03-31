@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view_search"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:fillViewport="true">
@@ -18,6 +19,7 @@
             >
 
             <!--Images warning-->
+
             <LinearLayout
                 android:id="@+id/container_images_warning"
                 android:orientation="vertical"
@@ -26,6 +28,7 @@
                 android:padding="10dp"
                 >
 
+                <!--Warning image-->
                 <ImageView
                     android:id="@+id/container_images_warning_image"
                     android:layout_width="wrap_content"
@@ -34,6 +37,7 @@
                     android:layout_gravity="center"
                     />
 
+                <!--Warning text-->
                 <TextView
                     android:id="@+id/container_images_warning_text"
                     android:layout_width="wrap_content"
@@ -42,6 +46,33 @@
                     android:layout_gravity="center"
                     android:textColor="@color/colorGrey"
                     />
+
+                <!-- Warning retry layout -->
+                <LinearLayout
+                    android:id="@+id/container_images_warning_retry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp"
+                    android:visibility="gone"
+                    >
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/retry_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="6dp"
+                        android:text="@string/retry"
+                        android:textColor="@color/colorUrbanTitle" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <!--Images-->
@@ -60,16 +91,16 @@
                     />
             </LinearLayout>
 
+            <!--Separator-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/separator_shadow"
+
+                />
+
         </LinearLayout>
-
-        <!--Separator-->
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/separator_shadow"
-
-        />
 
         <LinearLayout
             android:id="@+id/container_dictionaries"
@@ -107,26 +138,45 @@
                     />
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_card_morfix_term"
+            <LinearLayout
+                android:id="@+id/recycler_view_card_morfix_term_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_card_wikipedia_term"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_card_morfix_term"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_card_urban_dictionary_term"
+            <LinearLayout
+                android:id="@+id/recycler_view_card_wikipedia_term_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_card_wikipedia_term"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/recycler_view_card_urban_dictionary_term_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_card_urban_dictionary_term"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
 
 
 
         </LinearLayout>
+
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

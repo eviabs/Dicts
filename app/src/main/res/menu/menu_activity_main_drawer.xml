@@ -10,23 +10,19 @@
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_manage"
-            android:icon="@android:drawable/ic_menu_manage"
+            android:icon="@drawable/settings"
             android:title="@string/menu_tools" />
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/logout"
-            android:title="@string/menu_logout" />
     </group>
 
     <item android:title="@string/menu_title_communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@android:drawable/ic_menu_share"
+                android:icon="@drawable/share"
                 android:title="@string/menu_share" />
             <item
                 android:id="@+id/nav_send"
-                android:icon="@android:drawable/ic_menu_send"
+                android:icon="@drawable/send"
                 android:title="@string/menu_send" />
         </menu>
     </item>
