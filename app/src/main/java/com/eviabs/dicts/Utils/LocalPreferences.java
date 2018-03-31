@@ -11,6 +11,10 @@ import java.util.Set;
 
 import retrofit2.Retrofit;
 
+/**
+ * This class wraps the SharedPreferences objects which is modified by the SettingsFragment.
+ * We use this class to ease the process of accessing our user's preferences.
+ */
 public class LocalPreferences {
 
     // Settings keys

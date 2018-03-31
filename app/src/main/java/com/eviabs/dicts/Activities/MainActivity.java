@@ -51,7 +51,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String TAG = MainActivity.class.getSimpleName();
+    private final String TAG = MainActivity.class.getSimpleName();
+
+    private final String FRAGMENTS_SET_UP = "fragments_set_up";
+
+    private final SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
+
+    private final SettingsFragment settingsFragment = new SettingsFragment();
 
     private enum FragmentType {
         Search,
@@ -61,8 +67,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean fragmentsSetUp = false;
 
     private FragmentType currentShownFragment = FragmentType.Search;
-    final private SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
-    final private SettingsFragment settingsFragment = new SettingsFragment();
 
     private MaterialSearchView searchView = null;
 
@@ -74,9 +78,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        Log.d(TAG, "enters onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState != null) {
+            Log.d(TAG, "savedInstanceState != null");
+            this.fragmentsSetUp = savedInstanceState.getBoolean(FRAGMENTS_SET_UP);
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,21 +111,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setupFragments();
         showFragment(FragmentType.Search);
+
+        Log.d(TAG, "exits onCreate");
+    }
+
+    @Override
+    protected void onSaveInstanceState (Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "enters onSaveInstanceState");
+        outState.putBoolean(FRAGMENTS_SET_UP, this.fragmentsSetUp);
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume()");
         super.onResume();
 
     }
 
     @Override
     protected void onPause() {
+        Log.d(TAG, "onPause()");
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy()");
         super.onDestroy();
     }
 
@@ -385,6 +406,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Do nothing
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if (matches != null && matches.size() > 0) {
+                String searchWrd = matches.get(0);
+                if (!TextUtils.isEmpty(searchWrd)) {
+                    searchView.setQuery(searchWrd, false);
+                }
+            }
+
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -411,6 +447,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * Displays the desired fragment, and hides the other one.
+     *
+     * @param fragmentType the fragment to show
+     */
     public void showFragment(FragmentType fragmentType) {
         currentShownFragment = fragmentType;
         Fragment fragmentToShow = fragmentType == FragmentType.Search ? searchResultsFragment : settingsFragment;
@@ -424,18 +465,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.commit();
     }
 
+    /**
+     * Adds the 2 fragments to the fragments list.
+     * If the fragments are already added, we remove them and add them again.
+     *
+     */
     public void setupFragments() {
-        if (!fragmentsSetUp) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Log.d(TAG, "enters setupFragments");
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
-            fragmentTransaction.add(R.id.main_container, searchResultsFragment);
-            fragmentTransaction.add(R.id.main_container, settingsFragment);
+        if (fragmentsSetUp) {
+            Log.d(TAG, "fragmentsSetUp is true");
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(searchResultsFragment);
+            fragmentTransaction.remove(settingsFragment);
             fragmentTransaction.commit();
+
+        } else{
+
+            Log.d(TAG, "fragmentsSetUp is false");
             fragmentsSetUp = true;
         }
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.main_container, searchResultsFragment);
+        fragmentTransaction.add(R.id.main_container, settingsFragment);
+        fragmentTransaction.commit();
     }
 
+    /**
+     * Perform a search operation.
+     * Called from the searching fragment.
+     * The searching fragment will be shown, and any other fragment will be hidden.
+     *
+     * @param query the search term
+     */
     private void search(String query) {
         // Notify user if no internet connection is available
         notifyIfOffline();
@@ -454,22 +518,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchResultsFragment.search(query);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
-            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            if (matches != null && matches.size() > 0) {
-                String searchWrd = matches.get(0);
-                if (!TextUtils.isEmpty(searchWrd)) {
-                    searchView.setQuery(searchWrd, false);
-                }
-            }
-
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
+    /**
+     * Crated a nice Snakbar the notifies the user that no internet connection is available.
+     */
     public void notifyIfOffline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (!(cm !=null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting()))
@@ -478,6 +529,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     * Retrieve the LocalPreferences object.
+     * @return the LocalPreferences object.
+     */
     public LocalPreferences getLocalPreferences() {
         return localPreferences;
     }

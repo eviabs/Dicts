@@ -8,6 +8,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,8 @@ import static com.eviabs.dicts.ApiClients.ApiConsts.SERVER_BASE_URL;
  */
 public class SearchResultsFragment extends Fragment {
 
+    private String TAG = SearchResultsFragment.class.getSimpleName();
+
     private static View view = null;
 
     private QwantImagesAdapter qwantImagesAdapter = null;
@@ -83,7 +86,12 @@ public class SearchResultsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        Log.d(TAG, "enters onCreateView");
+        // We are holding a static member called view. We make sure to inflate the view ONLY ONCE.
+        // We also remove the view from it's parent if needed.
         if (view == null) {
+//            Log.d(TAG, "view == null");
+
             view = inflater.inflate(R.layout.fragment_search_results, container, false);
 
             containerImagesLayout = view.findViewById(R.id.container_images);
@@ -106,17 +114,31 @@ public class SearchResultsFragment extends Fragment {
             showAvailableSearchProviders();
         } else {
             // todo: check if java.lang.IllegalStateException: The specified child already has a parent was fixed
+//            Log.d(TAG, "view != null");
 
-            ((ViewGroup) view.getParent()).removeView(view);
-    }
+            if (view.getParent() != null) {
+//                Log.d(TAG, "view.getParent() != null");
+                ((ViewGroup) view.getParent()).removeView(view);
+            } else {
+                Log.d(TAG, "view.getParent() == null");
+            }
+        }
+//        Log.d(TAG, "exits onCreateView");
         return view;
     }
 
+    /**
+     * The main search function.
+     * This function searches for the query in all of the search providers that were selected in the settings.
+     * We also hide the search providers that were removed by the user.
+     *
+     * @param query the search term.
+     */
     public void search(String query) {
 
-        containerDictionariesWarningLayout.setVisibility(View.GONE);
-        containerDictionariesWarningImage.setVisibility(View.GONE);
-        containerDictionariesWarningText.setVisibility(View.GONE);
+        safeSetVisivility(containerDictionariesWarningLayout, View.GONE);
+        safeSetVisivility(containerDictionariesWarningImage, View.GONE);
+        safeSetVisivility(containerDictionariesWarningText, View.GONE);
 
         showAvailableSearchProviders();
 
@@ -144,6 +166,10 @@ public class SearchResultsFragment extends Fragment {
         }
     }
 
+    /**
+     * This function shows all of the search providers that the user selected, and hides the ones
+     * that were removed.
+     */
     private void showAvailableSearchProviders() {
         containerImagesLayout.setVisibility(View.VISIBLE);
         safeSetVisivility(urbanDictionaryRecyclerViewLayout, View.VISIBLE);
@@ -170,6 +196,10 @@ public class SearchResultsFragment extends Fragment {
         }
     }
 
+    /**
+     * Search the web asynchronously.
+     * @param term the search term
+     */
     private void searchQwantImagesAsync(final String term) {
         Retrofit retrofit = getRetrofit();
         QwantImageClient client = retrofit.create(QwantImageClient.class);
@@ -205,6 +235,10 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
+    /**
+     * Search the web asynchronously.
+     * @param term the search term
+     */
     private void searchUrbanDictionaryAsync(final String term) {
         Retrofit retrofit = getRetrofit();
         UrbanDictionaryClient client = retrofit.create(UrbanDictionaryClient.class);
@@ -236,6 +270,10 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
+    /**
+     * Search the web asynchronously.
+     * @param term the search term
+     */
     private void searchWikipediaAsync(final String term) {
         Retrofit retrofit = getRetrofit();
         WikipediaClient client = retrofit.create(WikipediaClient.class);
@@ -269,6 +307,10 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
+    /**
+     * Search the web asynchronously.
+     * @param term the search term
+     */
     private void searchMorfixAsync(final String term) {
         Retrofit retrofit = getRetrofit();
         MorfixClient client = retrofit.create(MorfixClient.class);
@@ -302,6 +344,10 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
+    /**
+     * Get the retrofit object using the user's server (custom or default server).
+     * @return the retrofit object.
+     */
     private Retrofit getRetrofit() {
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(getServerURL())
@@ -309,6 +355,15 @@ public class SearchResultsFragment extends Fragment {
         return builder.build();
     }
 
+    /**
+     * This function sets up all of the recyclerView objects.
+     * We swap adapters if needed, and assign each recyclerView only once.
+     *
+     * @param recyclerView the recyclerView object
+     * @param recyclerViewID the recyclerView id (the ID that apears in the layout)
+     * @param adapter the current adapter of the recyclerView
+     * @param orientation the orientation of the recyclerView
+     */
     private void setupRecyclerView(RecyclerView recyclerView, int recyclerViewID, RecyclerView.Adapter adapter, int orientation){
         if (recyclerView == null) {
             recyclerView = (RecyclerView) view.findViewById(recyclerViewID);
@@ -322,6 +377,18 @@ public class SearchResultsFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the images panel according the error that occured during the images search.
+     * Note: since the image panel is a little bit different from the other dictionaries, we need a
+     * separate function to handle this. For any other dictionary, this process is done inside the
+     * TermAdapter class.
+     *
+     * @param term
+     * @param isWarning
+     * @param showRetryPanel
+     * @param imageResource
+     * @param textResource
+     */
     private void setQwantWarningPanel(final String term, boolean isWarning, boolean showRetryPanel, int imageResource, int textResource) {
         if (isWarning) {
             containerImagesWarningLayout.setVisibility(View.VISIBLE);
@@ -348,10 +415,18 @@ public class SearchResultsFragment extends Fragment {
         }
     }
 
+    /**
+     * Get the LocalPreferences object from the host activity.
+     * @return local LocalPreferences object.
+     */
     public LocalPreferences getLocalPreferences() {
         return ((MainActivity) getActivity()).getLocalPreferences();
     }
 
+    /**
+     * Get the server URL (costum or default)
+     * @return the server URL
+     */
     public String getServerURL() {
         if (getLocalPreferences().isCustomServer()) {
             return getLocalPreferences().getCustonURLServer();
@@ -360,6 +435,13 @@ public class SearchResultsFragment extends Fragment {
         return ApiConsts.SERVER_BASE_URL;
     }
 
+    /**
+     * Some objects might not be set when this function is called, so we make sure
+     * that the setVisivility function will not be invoked from null.
+     *
+     * @param view the view
+     * @param visibility the visibility value
+     */
     public void safeSetVisivility(View view, int visibility) {
         if (view != null) {
             view.setVisibility(visibility);
