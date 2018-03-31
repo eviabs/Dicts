@@ -38,7 +38,8 @@
 
     <!--Settings-->
     <string name="settings_search_settings">Search Settings</string>
-    <string name="settings_version">version</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_version_string">%1$s (build %2$d)</string>
     <string name="settings_website">visit</string>
     <string name="settings_search_providers">Search Providers</string>
     <string name="settings_num_of_images">Images</string>

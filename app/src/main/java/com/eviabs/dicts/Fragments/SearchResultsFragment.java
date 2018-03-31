@@ -104,8 +104,11 @@ public class SearchResultsFragment extends Fragment {
             wikipediaRecyclerViewLayout = view.findViewById(R.id.recycler_view_card_wikipedia_term_layout);
 
             showAvailableSearchProviders();
-        }
+        } else {
+            // todo: check if java.lang.IllegalStateException: The specified child already has a parent was fixed
 
+            ((ViewGroup) view.getParent()).removeView(view);
+    }
         return view;
     }
 
