@@ -48,9 +48,9 @@ import static com.eviabs.dicts.ApiClients.ApiConsts.SERVER_BASE_URL;
  */
 public class SearchResultsFragment extends Fragment {
 
-    private String TAG = SearchResultsFragment.class.getSimpleName();
+    private String TAG = SearchResultsFragment.class.getSimpleName() + "@asw!";
 
-    private static View view = null;
+    private View view = null;
 
     private QwantImagesAdapter qwantImagesAdapter = null;
     private RecyclerView qwantRecyclerView = null;
@@ -120,7 +120,7 @@ public class SearchResultsFragment extends Fragment {
 //                Log.d(TAG, "view.getParent() != null");
                 ((ViewGroup) view.getParent()).removeView(view);
             } else {
-                Log.d(TAG, "view.getParent() == null");
+//                Log.d(TAG, "view.getParent() == null");
             }
         }
 //        Log.d(TAG, "exits onCreateView");

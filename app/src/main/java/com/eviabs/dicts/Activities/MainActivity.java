@@ -51,7 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final String TAG = MainActivity.class.getSimpleName();
+    private final String TAG = MainActivity.class.getSimpleName() + "@asw!";
 
     private final String FRAGMENTS_SET_UP = "fragments_set_up";
 
@@ -78,14 +78,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "enters onCreate");
+//        Log.d(TAG, "enters onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState != null) {
-            Log.d(TAG, "savedInstanceState != null");
-            this.fragmentsSetUp = savedInstanceState.getBoolean(FRAGMENTS_SET_UP);
-        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -112,14 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupFragments();
         showFragment(FragmentType.Search);
 
-        Log.d(TAG, "exits onCreate");
-    }
-
-    @Override
-    protected void onSaveInstanceState (Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.d(TAG, "enters onSaveInstanceState");
-        outState.putBoolean(FRAGMENTS_SET_UP, this.fragmentsSetUp);
+//        Log.d(TAG, "exits onCreate");
     }
 
     @Override
@@ -455,13 +443,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showFragment(FragmentType fragmentType) {
         currentShownFragment = fragmentType;
         Fragment fragmentToShow = fragmentType == FragmentType.Search ? searchResultsFragment : settingsFragment;
-        Fragment fragmentToHide = fragmentType != FragmentType.Search ? searchResultsFragment : settingsFragment;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_container, fragmentToShow);
 
-        fragmentTransaction.hide(fragmentToHide);
-        fragmentTransaction.show(fragmentToShow);
         fragmentTransaction.commit();
     }
 
@@ -471,25 +457,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      *
      */
     public void setupFragments() {
-        Log.d(TAG, "enters setupFragments");
+//        Log.d(TAG, "enters setupFragments");
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        Log.d(TAG, "fragments: " + fragmentManager.getFragments().size());
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        if (fragmentsSetUp) {
-            Log.d(TAG, "fragmentsSetUp is true");
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.remove(searchResultsFragment);
-            fragmentTransaction.remove(settingsFragment);
-            fragmentTransaction.commit();
-
-        } else{
-
-            Log.d(TAG, "fragmentsSetUp is false");
-            fragmentsSetUp = true;
-        }
-
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.main_container, searchResultsFragment);
-        fragmentTransaction.add(R.id.main_container, settingsFragment);
         fragmentTransaction.commit();
     }
 

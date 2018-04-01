@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_warning"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="25dp"
+    >
+
+    <!-- Warning image + text -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="25dp">
+
+        <ImageView
+            android:id="@+id/card_warning_info_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_height"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/no_terms_found" />
+
+        <TextView
+            android:id="@+id/card_warning_info_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/images_warning_no_images"
+            android:textColor="@color/colorGrey" />
+    </LinearLayout>
+
+    <!-- Warning retry layout -->
+    <LinearLayout
+        android:id="@+id/card_warning_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        >
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:src="@drawable/retry_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="6dp"
+            android:text="@string/retry"
+            android:textColor="@color/colorUrbanTitle" />
+    </LinearLayout>
+
+</LinearLayout>

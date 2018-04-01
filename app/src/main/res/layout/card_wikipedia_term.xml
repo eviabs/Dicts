@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.CardView
+        style="@style/CardWikipediaTermStyle"
+        android:id="@+id/card_term"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Dictionary Icon-->
+            <ImageView
+                android:layout_width="@dimen/dictionary_icon_size"
+                android:layout_height="@dimen/dictionary_icon_size"
+                android:src="@drawable/wikipedia_480"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/description_image_icon"
+                />
+
+            <!-- Warning layout -->
+            <include layout="@layout/card_warning_layout" />
+
+            <!-- Definition -->
+            <LinearLayout
+                android:id="@+id/linear_layout_definition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="25dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@android:style/TextAppearance.Holo.Large"
+                    android:id="@+id/textViewWikipediaTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="30sp"
+                    android:layout_marginEnd="@dimen/dictionary_icon_size"
+                    android:fontFamily="@font/linlibertine_r"
+                    tools:text="title" />
+
+                <com.ms.square.android.expandabletextview.ExpandableTextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/textViewWikipediaExtract"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    expandableTextView:maxCollapsedLines="6"
+                    expandableTextView:animDuration="200"
+                    >
+                    <TextView
+                        android:id="@id/expandable_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="18sp"
+                        />
+                    <ImageButton
+                        android:id="@id/expand_collapse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:layout_gravity="right|bottom"
+                        android:background="@android:color/transparent"/>
+                </com.ms.square.android.expandabletextview.ExpandableTextView>
+
+            </LinearLayout>
+
+        </RelativeLayout >
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
