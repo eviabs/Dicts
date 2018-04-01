@@ -35,6 +35,8 @@ import com.eviabs.dicts.R;
 import com.eviabs.dicts.Utils.LocalPreferences;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 private String[] responseToArrayOfSuggestions(String body) throws IOException {
                     // clean the response and split to array of strings
-                    String cleanedBodyStr = body.replaceAll(AutocompleteClient.BAD_CHARS, "");
+                    String cleanedBodyStr = StringEscapeUtils.unescapeJava(body.replaceAll(AutocompleteClient.BAD_CHARS, ""));
                     String[] arrSuggestions = cleanedBodyStr.split(AutocompleteClient.DELIMITER);
 
                     // remove the first (and duplicate) result
@@ -456,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * If the fragments are already added, we remove them and add them again.
      *
      */
-    public void setupFragments() {
+        public void setupFragments() {
 //        Log.d(TAG, "enters setupFragments");
 //        FragmentManager fragmentManager = getSupportFragmentManager();
 //        Log.d(TAG, "fragments: " + fragmentManager.getFragments().size());

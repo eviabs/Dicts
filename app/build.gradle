@@ -43,6 +43,7 @@ dependencies {
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
     compile 'com.github.travijuu:numberpicker:1.0.7'
     compile 'com.takisoft.fix:preference-v7:26.1.0.0'
+    compile 'commons-lang:commons-lang:2.6'
 
 
 }
