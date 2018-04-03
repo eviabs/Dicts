@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -78,6 +79,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private LocalPreferences localPreferences = null;
 
+    private boolean doubleBackToExitPressedOnce = false;
+
+    private int doubleBackToExitPressedOnceDuration = 2000;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        Log.d(TAG, "enters onCreate");
@@ -143,9 +149,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         } else if (currentShownFragment == FragmentType.Settings) {
             showFragment(FragmentType.Search);
-        } else {
+        } else if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
+            return;
         }
+
+        this.doubleBackToExitPressedOnce = true;
+        showToast(getResources().getString(R.string.back_twcie_to_exit));
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, doubleBackToExitPressedOnceDuration);
     }
 
     @Override

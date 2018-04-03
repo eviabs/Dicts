@@ -1,7 +1,9 @@
 package com.eviabs.dicts.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceManager;
@@ -48,6 +50,8 @@ import static com.eviabs.dicts.ApiClients.ApiConsts.SERVER_BASE_URL;
  */
 public class SearchResultsFragment extends Fragment {
 
+    public Context context = null;
+    public FragmentActivity activity = null;
     private String TAG = SearchResultsFragment.class.getSimpleName() + "@asw!";
 
     private View view = null;
@@ -89,6 +93,9 @@ public class SearchResultsFragment extends Fragment {
 //        Log.d(TAG, "enters onCreateView");
         // We are holding a static member called view. We make sure to inflate the view ONLY ONCE.
         // We also remove the view from it's parent if needed.
+        activity = getActivity();
+        context = activity.getApplicationContext();
+
         if (view == null) {
 //            Log.d(TAG, "view == null");
 
@@ -210,7 +217,7 @@ public class SearchResultsFragment extends Fragment {
         call.enqueue(new Callback<QwantImageResults>() {
             @Override
             public void onResponse(Call<QwantImageResults> call, Response<QwantImageResults> response) {
-                qwantImagesAdapter = new QwantImagesAdapter(getActivity(), response.body());
+                qwantImagesAdapter = new QwantImagesAdapter(context, response.body());
                 setupRecyclerView(qwantRecyclerView, R.id.recycler_view_list_images, qwantImagesAdapter, LinearLayoutManager.HORIZONTAL);
 
                 switch (response.body().getError()){
@@ -252,19 +259,19 @@ public class SearchResultsFragment extends Fragment {
             }
         };
 
-        urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SEARCHING, retryClick);
+        urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(context, ApiConsts.ERROR_CODE_SEARCHING, retryClick);
         setupRecyclerView(urbanDictionaryRecyclerView, R.id.recycler_view_card_urban_dictionary_term, urbanDictionaryTermAdapter, LinearLayoutManager.VERTICAL);
 
         call.enqueue(new Callback<UrbanDictionaryResults>() {
             @Override
             public void onResponse(Call<UrbanDictionaryResults> call, Response<UrbanDictionaryResults> response) {
-                urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(getActivity(), response.body(), retryClick);
+                urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(context, response.body(), retryClick);
                 setupRecyclerView(urbanDictionaryRecyclerView, R.id.recycler_view_card_urban_dictionary_term, urbanDictionaryTermAdapter, LinearLayoutManager.VERTICAL);
             }
 
             @Override
             public void onFailure(Call<UrbanDictionaryResults> call, Throwable t) {
-                urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
+                urbanDictionaryTermAdapter = new UrbanDictionaryTermAdapter(context, ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
                 setupRecyclerView(urbanDictionaryRecyclerView, R.id.recycler_view_card_urban_dictionary_term, urbanDictionaryTermAdapter, LinearLayoutManager.VERTICAL);
             }
         });
@@ -287,20 +294,20 @@ public class SearchResultsFragment extends Fragment {
             }
         };
 
-        wikipediaTermAdapter = new WikipediaTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SEARCHING, retryClick);
+        wikipediaTermAdapter = new WikipediaTermAdapter(context, ApiConsts.ERROR_CODE_SEARCHING, retryClick);
         setupRecyclerView(wikipediaRecyclerView, R.id.recycler_view_card_wikipedia_term, wikipediaTermAdapter, LinearLayoutManager.VERTICAL);
 
         call.enqueue(new Callback<WikipediaResults>() {
             @Override
             public void onResponse(Call<WikipediaResults> call, Response<WikipediaResults> response) {
-                wikipediaTermAdapter = new WikipediaTermAdapter(getActivity(), response.body(), retryClick);
+                wikipediaTermAdapter = new WikipediaTermAdapter(context, response.body(), retryClick);
                 setupRecyclerView(wikipediaRecyclerView, R.id.recycler_view_card_wikipedia_term, wikipediaTermAdapter, LinearLayoutManager.VERTICAL);
 
             }
 
             @Override
             public void onFailure(Call<WikipediaResults> call, Throwable t) {
-                wikipediaTermAdapter = new WikipediaTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
+                wikipediaTermAdapter = new WikipediaTermAdapter(context, ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
                 setupRecyclerView(wikipediaRecyclerView, R.id.recycler_view_card_wikipedia_term, wikipediaTermAdapter, LinearLayoutManager.VERTICAL);
 
             }
@@ -324,20 +331,20 @@ public class SearchResultsFragment extends Fragment {
             }
         };
 
-        morfixTermAdapter = new MorfixTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SEARCHING, retryClick);
+        morfixTermAdapter = new MorfixTermAdapter(context, ApiConsts.ERROR_CODE_SEARCHING, retryClick);
         setupRecyclerView(morfixRecyclerView, R.id.recycler_view_card_morfix_term, morfixTermAdapter, LinearLayoutManager.VERTICAL);
 
         call.enqueue(new Callback<MorfixResults>() {
             @Override
             public void onResponse(Call<MorfixResults> call, Response<MorfixResults> response) {
-                morfixTermAdapter = new MorfixTermAdapter(getActivity(), response.body(), retryClick);
+                morfixTermAdapter = new MorfixTermAdapter(context, response.body(), retryClick);
                 setupRecyclerView(morfixRecyclerView, R.id.recycler_view_card_morfix_term, morfixTermAdapter, LinearLayoutManager.VERTICAL);
 
             }
 
             @Override
             public void onFailure(Call<MorfixResults> call, Throwable t) {
-                morfixTermAdapter = new MorfixTermAdapter(getActivity(), ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
+                morfixTermAdapter = new MorfixTermAdapter(context, ApiConsts.ERROR_CODE_SERVER_ERROR, retryClick);
                 setupRecyclerView(morfixRecyclerView, R.id.recycler_view_card_morfix_term, morfixTermAdapter, LinearLayoutManager.VERTICAL);
 
             }
@@ -367,7 +374,8 @@ public class SearchResultsFragment extends Fragment {
     private void setupRecyclerView(RecyclerView recyclerView, int recyclerViewID, RecyclerView.Adapter adapter, int orientation){
         if (recyclerView == null) {
             recyclerView = (RecyclerView) view.findViewById(recyclerViewID);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), orientation, false);
+            Log.d(TAG, context.toString());
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context, orientation, false);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
@@ -420,7 +428,7 @@ public class SearchResultsFragment extends Fragment {
      * @return local LocalPreferences object.
      */
     public LocalPreferences getLocalPreferences() {
-        return ((MainActivity) getActivity()).getLocalPreferences();
+        return ((MainActivity) activity).getLocalPreferences();
     }
 
     /**

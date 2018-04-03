@@ -99,7 +99,7 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
 
             case ApiConsts.ERROR_CODE_SEARCHING:
                 holder.definitionContainer.setVisibility(View.GONE);
-                holder.errorImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.searching_images));
+                holder.errorImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.searching_terms));
                 holder.errorText.setText(mContext.getResources().getString(R.string.dictionaries_error_searching));
                 holder.errorLayout.setVisibility(View.VISIBLE);
                 holder.retryLayout.setVisibility(View.GONE);

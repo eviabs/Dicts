@@ -66,7 +66,7 @@
     <string name="no_internet_connection">No internet</string>
     <string name="dismiss">dismiss</string>
     <string name="settings_bad_url">Bad URL</string>
-
+    <string name="back_twcie_to_exit">Press back again to exit</string>
 
 
 </resources>
