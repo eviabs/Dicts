@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private boolean doubleBackToExitPressedOnce = false;
 
-    private int doubleBackToExitPressedOnceDuration = 2000;
+    private int doubleBackToExitPressedOnceDuration = 2000; // length of Toast.LENGTH_SHORT
 
 
     @Override
@@ -145,10 +145,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (searchView.isSearchOpen()) {
             searchView.closeSearch();
+            return;
+
         } else if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+            return;
+
         } else if (currentShownFragment == FragmentType.Settings) {
             showFragment(FragmentType.Search);
+            return;
+
         } else if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             return;

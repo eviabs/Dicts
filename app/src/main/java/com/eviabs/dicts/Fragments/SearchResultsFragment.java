@@ -149,28 +149,23 @@ public class SearchResultsFragment extends Fragment {
 
         showAvailableSearchProviders();
 
-        if (getLocalPreferences().isCustomSearchProvider()) {
-            if (getLocalPreferences().isCustomSearchProviderImages()) {
-                searchQwantImagesAsync(query);
-            }
 
-            if (getLocalPreferences().isCustomSearchProviderUrbanDictionary()) {
-                searchUrbanDictionaryAsync(query);
-            }
-
-            if (getLocalPreferences().isCustomSearchProviderWikipedia()) {
-                searchWikipediaAsync(query);
-            }
-
-            if (getLocalPreferences().isCustomSearchProviderMorfix()) {
-                searchMorfixAsync(query);
-            }
-        } else {
+        if (getLocalPreferences().isCustomSearchProviderImages()) {
             searchQwantImagesAsync(query);
+        }
+
+        if (getLocalPreferences().isCustomSearchProviderUrbanDictionary()) {
             searchUrbanDictionaryAsync(query);
+        }
+
+        if (getLocalPreferences().isCustomSearchProviderWikipedia()) {
             searchWikipediaAsync(query);
+        }
+
+        if (getLocalPreferences().isCustomSearchProviderMorfix()) {
             searchMorfixAsync(query);
         }
+
     }
 
     /**
@@ -183,24 +178,22 @@ public class SearchResultsFragment extends Fragment {
         safeSetVisivility(wikipediaRecyclerViewLayout, View.VISIBLE);
         safeSetVisivility(morfixRecyclerViewLayout, View.VISIBLE);
 
-        if (getLocalPreferences().isCustomSearchProvider()) {
-
-            if (!getLocalPreferences().isCustomSearchProviderImages()) {
-                containerImagesLayout.setVisibility(View.GONE);
-            }
-
-            if (!getLocalPreferences().isCustomSearchProviderUrbanDictionary()) {
-                safeSetVisivility(urbanDictionaryRecyclerViewLayout, View.GONE);
-            }
-
-            if (!getLocalPreferences().isCustomSearchProviderWikipedia()) {
-                safeSetVisivility(wikipediaRecyclerViewLayout, View.GONE);
-            }
-
-            if (!getLocalPreferences().isCustomSearchProviderMorfix()) {
-                safeSetVisivility(morfixRecyclerViewLayout, View.GONE);
-            }
+        if (!getLocalPreferences().isCustomSearchProviderImages()) {
+            containerImagesLayout.setVisibility(View.GONE);
         }
+
+        if (!getLocalPreferences().isCustomSearchProviderUrbanDictionary()) {
+            safeSetVisivility(urbanDictionaryRecyclerViewLayout, View.GONE);
+        }
+
+        if (!getLocalPreferences().isCustomSearchProviderWikipedia()) {
+            safeSetVisivility(wikipediaRecyclerViewLayout, View.GONE);
+        }
+
+        if (!getLocalPreferences().isCustomSearchProviderMorfix()) {
+            safeSetVisivility(morfixRecyclerViewLayout, View.GONE);
+        }
+
     }
 
     /**

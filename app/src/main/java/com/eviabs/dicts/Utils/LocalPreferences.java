@@ -86,19 +86,19 @@ public class LocalPreferences {
     }
 
     public boolean isCustomSearchProviderImages() {
-        return prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_IMAGES, DEFAULT_SETTINGS_SEARCH_PROVIDER_IMAGES);
+        return !isCustomSearchProvider() || prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_IMAGES, DEFAULT_SETTINGS_SEARCH_PROVIDER_IMAGES);
     }
 
     public boolean isCustomSearchProviderWikipedia() {
-        return prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_WIKIPEDIA, DEFAULT_SETTINGS_SEARCH_PROVIDER_WIKIPEDIA);
+        return !isCustomSearchProvider() || prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_WIKIPEDIA, DEFAULT_SETTINGS_SEARCH_PROVIDER_WIKIPEDIA);
     }
 
     public boolean isCustomSearchProviderMorfix() {
-        return prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_MORFIX, DEFAULT_SETTINGS_SEARCH_PROVIDER_MORFIX);
+        return !isCustomSearchProvider() || prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_MORFIX, DEFAULT_SETTINGS_SEARCH_PROVIDER_MORFIX);
     }
 
     public boolean isCustomSearchProviderUrbanDictionary() {
-        return prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY, DEFAULT_SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY);
+        return !isCustomSearchProvider() || prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY, DEFAULT_SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY);
     }
 
     public static boolean isValidURL(String url){
