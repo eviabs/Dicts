@@ -1,10 +1,10 @@
 
-package com.eviabs.dicts.Dictionaries.Morfix;
+package com.eviabs.dicts.SearchProviders.Morfix;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class InputLanguageMeaning {
+public class OutputLanguageMeaning {
 
     @SerializedName("DisplayText")
     @Expose

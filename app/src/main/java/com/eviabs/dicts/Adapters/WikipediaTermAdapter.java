@@ -1,16 +1,20 @@
 package com.eviabs.dicts.Adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.eviabs.dicts.Dictionaries.Results;
-import com.eviabs.dicts.Dictionaries.Wikipedia.WikipediaResults;
+import com.eviabs.dicts.SearchProviders.Results;
+import com.eviabs.dicts.SearchProviders.Wikipedia.WikipediaResults;
 import com.eviabs.dicts.R;
+import com.google.gson.Gson;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
 
 public class WikipediaTermAdapter extends TermAdapter {
 
@@ -26,12 +30,8 @@ public class WikipediaTermAdapter extends TermAdapter {
 
         }
     }
-    public WikipediaTermAdapter(Context mContext, Results wikipediaResults, View.OnClickListener retryOnClickListener) {
-        super(mContext, R.layout.card_wikipedia_term, wikipediaResults, retryOnClickListener);
-    }
-
-    public WikipediaTermAdapter(Context mContext, int error, View.OnClickListener retryOnClickListener) {
-        super(mContext, error, R.layout.card_wikipedia_term, retryOnClickListener);
+    public WikipediaTermAdapter(Context mContext, int error, ResponseBody responseBody, View.OnClickListener retryOnClickListener) {
+        super(mContext, error, responseBody, retryOnClickListener);
     }
 
     @Override
@@ -50,5 +50,27 @@ public class WikipediaTermAdapter extends TermAdapter {
 
         holder.title.setText(term.getTitle());
         holder.extract.setText(term.getExtract());
+    }
+
+    @Override
+    protected Results createResultsObject(ResponseBody responseBody) {
+        if (responseBody != null) {
+            try {
+                return new Gson().fromJson(responseBody.string(), WikipediaResults.class);
+            } catch (IOException ex) {
+                // do nothing
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected int getDefinitionLayoutId() {
+        return R.layout.definition_wikipedia;
+    }
+
+    @Override
+    protected Drawable getIconDrawable() {
+        return mContext.getResources().getDrawable(R.drawable.wikipedia_480);
     }
 }

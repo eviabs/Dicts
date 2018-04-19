@@ -1,0 +1,163 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+style="@style/CardUrbanTermStyle"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+xmlns:tools="http://schemas.android.com/tools"
+android:padding="25dp"
+android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@android:style/TextAppearance.Holo.Large"
+        android:id="@+id/textViewUrbanWord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorUrbanTitle"
+        android:textStyle="bold"
+        tools:text="word"
+        android:layout_marginEnd="@dimen/dictionary_icon_size"
+        android:fontFamily="@font/lora"
+        android:textSize="30sp"
+        android:textIsSelectable="true"
+        />
+
+    <com.ms.square.android.expandabletextview.ExpandableTextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/textViewUrbanDefinition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        expandableTextView:maxCollapsedLines="6"
+        expandableTextView:animDuration="200"
+
+        >
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@id/expandable_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp"
+            />
+        <ImageButton
+            android:id="@id/expand_collapse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_gravity="right|bottom"
+            android:background="@android:color/transparent"/>
+    </com.ms.square.android.expandabletextview.ExpandableTextView>
+
+    <com.ms.square.android.expandabletextview.ExpandableTextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/textViewUrbanExample"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        expandableTextView:maxCollapsedLines="4"
+        expandableTextView:animDuration="200"
+        >
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@id/expandable_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:textSize="18sp"
+            />
+        <ImageButton
+            android:id="@id/expand_collapse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_gravity="right|bottom"
+            android:background="@android:color/transparent"/>
+    </com.ms.square.android.expandabletextview.ExpandableTextView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        >
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@android:style/TextAppearance.Holo.Medium"
+        android:id="@+id/textViewUrbanBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginEnd="8dp"
+        android:textIsSelectable="true"
+        android:text="@string/urban_dictionary_by"
+        tools:text="@string/urban_dictionary_by" />
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@android:style/TextAppearance.Holo.Medium"
+        android:id="@+id/textViewUrbanAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/colorUrbanTitle"
+        android:layout_toEndOf="@id/textViewUrbanBy"
+        android:textIsSelectable="true"
+        tools:text="Author" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/urban_thumbs_background"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_thumb_up_black_24dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textViewUrbanThumbsUp"
+            style="@android:style/TextAppearance.Holo.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textIsSelectable="true"
+            tools:text="1" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:background="@color/colorBlack"
+
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_thumb_down_black_24dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textViewUrbanThumbsDown"
+            style="@android:style/TextAppearance.Holo.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+
+
+            android:layout_margin="10dp"
+            android:layout_gravity="center_vertical"
+            tools:text="-1" />
+    </LinearLayout>
+
+</LinearLayout>
+
+

@@ -1,5 +1,5 @@
 
-package com.eviabs.dicts.Dictionaries.Morfix;
+package com.eviabs.dicts.SearchProviders.Morfix;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

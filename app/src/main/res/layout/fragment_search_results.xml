@@ -12,93 +12,49 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <LinearLayout
-            android:id="@+id/container_images"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
 
-            <!--Images warning-->
-
             <LinearLayout
-                android:id="@+id/container_images_warning"
-                android:orientation="vertical"
+                android:id="@+id/container_images"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:orientation="vertical"
                 >
 
-                <!--Warning image-->
-                <ImageView
-                    android:id="@+id/container_images_warning_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/image_small_height"
-                    android:src="@drawable/images"
-                    android:layout_gravity="center"
-                    />
-
-                <!--Warning text-->
-                <TextView
-                    android:id="@+id/container_images_warning_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/images_warning_search"
-                    android:layout_gravity="center"
-                    android:textColor="@color/colorGrey"
-                    />
-
-                <!-- Warning retry layout -->
                 <LinearLayout
-                    android:id="@+id/container_images_warning_retry"
-                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/container_images_warning"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:visibility="gone"
+                    android:layout_margin="@dimen/card_margin"
+
                     >
 
                     <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/retry_blue" />
+                        android:id="@+id/container_images_warning_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/image_height"
+                        android:src="@drawable/images"
+                        android:gravity="center"
+                        />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/container_images_text"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="6dp"
-                        android:text="@string/retry"
-                        android:textColor="@color/colorUrbanTitle" />
+                        android:text="@string/images_warning_search"
+                        android:gravity="center"
+                        android:textColor="@color/colorGrey"
+                        />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!--Images-->
-            <LinearLayout
-                android:id="@+id/container_recycler_view_list_images"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_list_images"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    />
-            </LinearLayout>
-
             <!--Separator-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/separator_shadow"
-
-                />
+            <include layout="@layout/separator" />
 
         </LinearLayout>
 
@@ -137,43 +93,6 @@
 
                     />
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/recycler_view_card_morfix_term_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_card_morfix_term"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/recycler_view_card_wikipedia_term_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_card_wikipedia_term"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/recycler_view_card_urban_dictionary_term_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_card_urban_dictionary_term"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-            </LinearLayout>
-
 
 
         </LinearLayout>

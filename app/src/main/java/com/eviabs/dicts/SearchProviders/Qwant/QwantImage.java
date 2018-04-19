@@ -1,4 +1,4 @@
-package com.eviabs.dicts.Dictionaries.Qwant;
+package com.eviabs.dicts.SearchProviders.Qwant;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

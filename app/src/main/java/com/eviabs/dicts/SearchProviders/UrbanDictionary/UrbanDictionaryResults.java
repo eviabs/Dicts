@@ -1,10 +1,9 @@
-package com.eviabs.dicts.Dictionaries.UrbanDictionary;
+package com.eviabs.dicts.SearchProviders.UrbanDictionary;
 
-import com.eviabs.dicts.Dictionaries.Results;
+import com.eviabs.dicts.SearchProviders.Results;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UrbanDictionaryResults extends Results {

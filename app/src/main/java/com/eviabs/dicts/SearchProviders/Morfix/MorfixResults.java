@@ -1,8 +1,8 @@
-package com.eviabs.dicts.Dictionaries.Morfix;
+package com.eviabs.dicts.SearchProviders.Morfix;
 
 import java.util.List;
 
-import com.eviabs.dicts.Dictionaries.Results;
+import com.eviabs.dicts.SearchProviders.Results;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

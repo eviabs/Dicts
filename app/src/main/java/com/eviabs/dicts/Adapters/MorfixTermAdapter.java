@@ -1,21 +1,25 @@
 package com.eviabs.dicts.Adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.eviabs.dicts.Dictionaries.Morfix.MorfixResults;
-import com.eviabs.dicts.Dictionaries.Morfix.MorfixUtils;
-import com.eviabs.dicts.Dictionaries.Morfix.Word;
-import com.eviabs.dicts.Dictionaries.Results;
+import com.eviabs.dicts.SearchProviders.Morfix.MorfixResults;
+import com.eviabs.dicts.SearchProviders.Morfix.MorfixUtils;
+import com.eviabs.dicts.SearchProviders.Morfix.Word;
+import com.eviabs.dicts.SearchProviders.Results;
 import com.eviabs.dicts.R;
+import com.google.gson.Gson;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
 
 public class MorfixTermAdapter extends TermAdapter {
 
@@ -54,14 +58,9 @@ public class MorfixTermAdapter extends TermAdapter {
         }
     }
 
-    public MorfixTermAdapter(Context mContext, Results morfixResults, View.OnClickListener retryOnClickListener) {
-        super(mContext, R.layout.card_morfix_term, morfixResults, retryOnClickListener);
+    public MorfixTermAdapter(Context mContext, int error, ResponseBody responseBody, View.OnClickListener retryOnClickListener) {
+        super(mContext, error, responseBody, retryOnClickListener);
     }
-
-    public MorfixTermAdapter(Context mContext, int error, View.OnClickListener retryOnClickListener) {
-        super(mContext, error, R.layout.card_morfix_term, retryOnClickListener);
-    }
-
 
     @Override
     public InnerTermViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -72,7 +71,7 @@ public class MorfixTermAdapter extends TermAdapter {
     }
 
     @Override
-    public void setDefinitionLayout(InnerTermViewHolder oldHolder, int position) {
+    protected void setDefinitionLayout(InnerTermViewHolder oldHolder, int position) {
 
         MorfixResults term = ((MorfixResults) results);
         MyViewHolder holder = ((MyViewHolder) oldHolder.outerTermAdapter);
@@ -99,5 +98,27 @@ public class MorfixTermAdapter extends TermAdapter {
         }
 
 
+    }
+
+    @Override
+    protected Results createResultsObject(ResponseBody responseBody) {
+        if (responseBody != null) {
+            try {
+                return new Gson().fromJson(responseBody.string(), MorfixResults.class);
+            } catch (IOException ex) {
+                // do nothing
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected int getDefinitionLayoutId() {
+        return R.layout.definition_morfix;
+    }
+
+    @Override
+    protected Drawable getIconDrawable() {
+        return mContext.getResources().getDrawable(R.drawable.morfix_300);
     }
 }

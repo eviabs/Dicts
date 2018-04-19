@@ -2,6 +2,7 @@ package com.eviabs.dicts.Adapters;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.eviabs.dicts.ApiClients.ApiConsts;
-import com.eviabs.dicts.Dictionaries.Results;
+import com.eviabs.dicts.SearchProviders.Results;
 import com.eviabs.dicts.R;
+
+import okhttp3.ResponseBody;
 
 /**
  * An abstract class that resemble a general term adapter.
@@ -26,6 +29,13 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
     protected int layout;
     protected Results results;
 
+    private Drawable noTermsFoundImage;
+    private String noTermsFoundText;
+    private Drawable searchingImage;
+    private String searchingText;
+    private Drawable errorImage;
+    private String errorText;
+
     private View.OnClickListener retryOnClickListener;
     private int error;
 
@@ -35,13 +45,13 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
         ImageView errorImage;
         TextView errorText;
         LinearLayout retryLayout;
-        protected LinearLayout definitionContainer;
+        private LinearLayout definitionContainer;
 
         protected TermAdapterViewHolder outerTermAdapter;
 
         protected View view;
 
-        public InnerTermViewHolder(View view) {
+        private InnerTermViewHolder(View view) {
             super(view);
             this.errorLayout = view.findViewById(R.id.card_warning);
             this.errorImage = view.findViewById(R.id.card_warning_info_image);
@@ -52,20 +62,48 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
         }
     }
 
-    public TermAdapter(Context mContext, int layout, Results results, View.OnClickListener retryOnClickListener) {
+    protected TermAdapter(Context mContext, int error, ResponseBody results, View.OnClickListener retryOnClickListener) {
         this.mContext = mContext;
-        this.layout = layout;
         this.retryOnClickListener = retryOnClickListener;
-        this.error = ApiConsts.ERROR_CODE_UNINITIALIZED;
-        this.results = results;
-    }
-
-    public TermAdapter(Context mContext, int error, int layout, View.OnClickListener retryOnClickListener) {
-        this(mContext, layout, null, retryOnClickListener);
         this.error = error;
+        this.results = createResultsObject(results);
+
+        // Set images and texts
+        this.noTermsFoundImage = mContext.getResources().getDrawable(R.drawable.no_terms_found);
+        this.noTermsFoundText = mContext.getResources().getString(R.string.dictionaries_error_no_results);
+
+        this.searchingImage = mContext.getResources().getDrawable(R.drawable.searching_terms);
+        this.searchingText =  mContext.getResources().getString(R.string.dictionaries_error_searching);
+
+        this.errorImage = mContext.getResources().getDrawable(R.drawable.server_error);
+        this.errorText =  mContext.getResources().getString(R.string.images_warning_server_error);
     }
 
-    private int getError() {
+    public void setNoTermsFoundImage(Drawable noTermsFoundImage) {
+        this.noTermsFoundImage = noTermsFoundImage;
+    }
+
+    public void setNoTermsFoundText(String noTermsFoundText) {
+        this.noTermsFoundText = noTermsFoundText;
+    }
+
+    public void setSearchingImage(Drawable searchingImage) {
+        this.searchingImage = searchingImage;
+    }
+
+    public void setSearchingText(String searchingText) {
+        this.searchingText = searchingText;
+    }
+
+    public void setErrorImage(Drawable errorImage) {
+        this.errorImage = errorImage;
+    }
+
+    public void setErrorText(String errorText) {
+        this.errorText = errorText;
+    }
+
+    protected int getError() {
         if (error == ApiConsts.ERROR_CODE_UNINITIALIZED) {
             if (results == null) {
                 return ApiConsts.ERROR_CODE_UNEXPECTED_ERROR;
@@ -78,7 +116,10 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
 
     @Override
     public TermAdapter.InnerTermViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_term, parent, false);
+        ((ImageView) itemView.findViewById(R.id.card_dictionary_icon)).setImageDrawable(getIconDrawable());
+        ((LinearLayout) itemView.findViewById(R.id.linear_layout_definition)).addView(LayoutInflater.from(parent.getContext()).inflate(getDefinitionLayoutId(), null, false));
+
         return new InnerTermViewHolder(itemView);
     }
 
@@ -91,16 +132,16 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
         switch (getError()) {
             case ApiConsts.ERROR_CODE_NO_RESULTS:
                 holder.definitionContainer.setVisibility(View.GONE);
-                holder.errorImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_terms_found));
-                holder.errorText.setText(mContext.getResources().getString(R.string.dictionaries_error_no_results));
+                holder.errorImage.setImageDrawable(noTermsFoundImage);
+                holder.errorText.setText(noTermsFoundText);
                 holder.errorLayout.setVisibility(View.VISIBLE);
                 holder.retryLayout.setVisibility(View.GONE);
                 break;
 
             case ApiConsts.ERROR_CODE_SEARCHING:
                 holder.definitionContainer.setVisibility(View.GONE);
-                holder.errorImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.searching_terms));
-                holder.errorText.setText(mContext.getResources().getString(R.string.dictionaries_error_searching));
+                holder.errorImage.setImageDrawable(searchingImage);
+                holder.errorText.setText(searchingText);
                 holder.errorLayout.setVisibility(View.VISIBLE);
                 holder.retryLayout.setVisibility(View.GONE);
                 break;
@@ -113,13 +154,11 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
 
             default:
                 holder.definitionContainer.setVisibility(View.GONE);
-                holder.errorImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.server_error));
-                holder.errorText.setText(mContext.getResources().getString(R.string.images_warning_server_error));
+                holder.errorImage.setImageDrawable(errorImage);
+                holder.errorText.setText(errorText);
                 holder.errorLayout.setVisibility(View.VISIBLE);
                 holder.retryLayout.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     @Override
@@ -128,6 +167,10 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
             return 1;
         }
         return results.getCount();
+    }
+
+    protected Drawable getIconDrawable() {
+        return null;
     }
 
     /**
@@ -139,4 +182,7 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
      */
     protected abstract void setDefinitionLayout(TermAdapter.InnerTermViewHolder holder, int position);
 
+    protected abstract Results createResultsObject(ResponseBody responseBody);
+
+    protected abstract int getDefinitionLayoutId();
 }

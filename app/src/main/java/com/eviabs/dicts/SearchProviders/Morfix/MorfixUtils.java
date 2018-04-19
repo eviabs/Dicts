@@ -1,11 +1,9 @@
-package com.eviabs.dicts.Dictionaries.Morfix;
+package com.eviabs.dicts.SearchProviders.Morfix;
 
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

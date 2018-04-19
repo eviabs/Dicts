@@ -1,4 +1,4 @@
-package com.eviabs.dicts.Dictionaries.UrbanDictionary;
+package com.eviabs.dicts.SearchProviders.UrbanDictionary;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

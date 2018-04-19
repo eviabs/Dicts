@@ -37,38 +37,13 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="category_custom_search_providers"
         android:title="@string/settings_search_providers">
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="custom_search_providers"
             android:title="@string/settings_search_providers_title" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-
-            android:dependency="custom_search_providers"
-            android:disableDependentsState="false"
-            android:icon="@drawable/images"
-            android:key="search_provider_images"
-            android:title="@string/settings_search_providers_qwant" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="custom_search_providers"
-            android:icon="@drawable/wikipedia_480"
-            android:key="search_provider_wikipedia"
-            android:title="@string/settings_search_providers_wikipedia" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="custom_search_providers"
-            android:icon="@drawable/morfix_300"
-            android:key="search_provider_morfix"
-            android:title="@string/settings_search_providers_morfix" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="custom_search_providers"
-            android:icon="@drawable/urban_512"
-            android:key="search_provider_urban_dictionary"
-            android:title="@string/settings_search_providers_urban_dictionary" />
 
 
     </PreferenceCategory>

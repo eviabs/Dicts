@@ -2,45 +2,49 @@ package com.eviabs.dicts.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.CardView;
 import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.eviabs.dicts.Dictionaries.Qwant.QwantImage;
-import com.eviabs.dicts.Dictionaries.Qwant.QwantImageResults;
+import com.eviabs.dicts.SearchProviders.Qwant.QwantImage;
+import com.eviabs.dicts.SearchProviders.Qwant.QwantImageResults;
+import com.eviabs.dicts.SearchProviders.Results;
 import com.eviabs.dicts.R;
 import com.eviabs.dicts.Utils.TextDrawable;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import java.io.IOException;
-import java.util.List;
 
+import okhttp3.ResponseBody;
 import pl.droidsonroids.gif.GifDrawable;
 
-public class QwantImagesAdapter extends RecyclerView.Adapter<QwantImagesAdapter.MyViewHolder> {
+public class QwantImagesAdapter extends TermAdapter {
 
-    private List<QwantImage> imagesList;
-    private Context context;
+    public class MyViewHolder extends TermAdapterViewHolder {
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView image;
 
         public MyViewHolder(View view) {
             super(view);
+
             image = (ImageView) view.findViewById(R.id.image_view_list_item_image);
+
         }
     }
 
-    public QwantImagesAdapter(Context context, QwantImageResults qwantImageResults) {
-        this.context = context;
-        this.imagesList = qwantImageResults.getImages();
+    public QwantImagesAdapter(Context mContext, int error, ResponseBody responseBody, View.OnClickListener retryOnClickListener) {
+        super(mContext, error, responseBody, retryOnClickListener);
+        setNoTermsFoundImage(mContext.getResources().getDrawable(R.drawable.no_images_found));
+        setNoTermsFoundText(mContext.getResources().getString(R.string.images_warning_no_images));
 
+        setSearchingImage(mContext.getResources().getDrawable(R.drawable.searching_images));
+        setSearchingText(mContext.getResources().getString(R.string.images_warning_searching));
     }
 
     private TextDrawable getTextDrawable(View view, int stringResource) {
@@ -54,39 +58,47 @@ public class QwantImagesAdapter extends RecyclerView.Adapter<QwantImagesAdapter.
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public InnerTermViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        InnerTermViewHolder innerTermViewHolder = super.onCreateViewHolder(parent, viewType);
+        innerTermViewHolder.outerTermAdapter = new MyViewHolder(innerTermViewHolder.view);
+        return innerTermViewHolder;
 
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_image, parent, false);
-        return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    protected void setDefinitionLayout(InnerTermViewHolder oldHolder, final int position) {
 
+        // Change the image width
+        ViewGroup.LayoutParams paramsLayoutCardTermContainer = oldHolder.view.findViewById(R.id.card_term_container).getLayoutParams();
+        paramsLayoutCardTermContainer.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+        final QwantImageResults term = ((QwantImageResults) results);
+        final MyViewHolder holder = ((MyViewHolder) oldHolder.outerTermAdapter);
 
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Open full screen image
+
                 // create error drawable to show when image cannot be loaded
                 TextDrawable errorDrawable = getTextDrawable(view, R.string.images_warning_loading_error);
                 TextDrawable loadingDrawable = getTextDrawable(view, R.string.images_warning_loading);
 
                 // create the custom hierarchyBuilder which sets a loading + error images
-                GenericDraweeHierarchyBuilder hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(view.getContext().getResources())
+                GenericDraweeHierarchyBuilder hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(mContext.getResources())
                         .setFailureImage(errorDrawable)
                         .setPlaceholderImage(loadingDrawable)
                         .setProgressBarImage(new ProgressBarDrawable());
 
                 // build the full screen images screen
-                new ImageViewer.Builder<>(view.getContext(), imagesList)
+                new ImageViewer.Builder<>(mContext, term.getImages())
                         .setFormatter(new ImageViewer.Formatter<QwantImage>() {
                             @Override
                             public String format(QwantImage customImage) {
                                 return customImage.getMedia();
                             }
                         })
-                        .setStartPosition(holder.getAdapterPosition())
+                        .setStartPosition(position)
                         .setCustomDraweeHierarchyBuilder(hierarchyBuilder)
                         .show();
             }
@@ -95,15 +107,15 @@ public class QwantImagesAdapter extends RecyclerView.Adapter<QwantImagesAdapter.
         try {
             // smooth spinner
             Picasso.get()
-                    .load(imagesList.get(position).getThumbnail())
-                    .placeholder(new GifDrawable(context.getResources(), R.drawable.small_spinner))
+                    .load(term.getImages().get(position).getThumbnail())
+                    .placeholder(new GifDrawable(mContext.getResources(), R.drawable.small_spinner))
                     .error(R.drawable.ic_suggestion)
                     .fit()
                     .into(holder.image);
             // if failed, load the ugly one :(
         } catch (IOException ex) {
             Picasso.get()
-                    .load(imagesList.get(position).getThumbnail())
+                    .load(term.getImages().get(position).getThumbnail())
                     .placeholder(R.drawable.image_loading_animation)
                     .error(R.drawable.ic_suggestion)
                     .fit()
@@ -112,10 +124,50 @@ public class QwantImagesAdapter extends RecyclerView.Adapter<QwantImagesAdapter.
     }
 
     @Override
-    public int getItemCount() {
-        if (imagesList == null) {
-            return 0;
+    protected Results createResultsObject(ResponseBody responseBody) {
+        if (responseBody != null) {
+            try {
+                return new Gson().fromJson(responseBody.string(), QwantImageResults.class);
+            } catch (IOException ex) {
+                // do nothing
+            }
         }
-        return imagesList.size();
+        return null;
+    }
+
+    @Override
+    protected int getDefinitionLayoutId() {
+        return R.layout.list_item_image;
+    }
+
+    @Override
+    public void onBindViewHolder(TermAdapter.InnerTermViewHolder holder, int position) {
+
+        changeImagesLayout(holder);
+        super.onBindViewHolder(holder, position);
+    }
+
+    private void changeImagesLayout(InnerTermViewHolder holder) {
+        holder.view.findViewById(R.id.card_warning).setPadding(0, 0, 0, 0);
+        holder.view.findViewById(R.id.card_warning_info).setPadding(0, 0, 0, 0);
+
+
+        CardView cardView = (CardView) holder.view.findViewById(R.id.card_term);
+
+        cardView.setBackgroundColor(mContext.getResources().getColor(R.color.colorTransparent));
+        cardView.setPadding(0, 0, 0, 0);
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
+        params.setMarginStart((int) (mContext.getResources().getDimension(R.dimen.card_images_gap)));
+        params.setMarginEnd((int) (mContext.getResources().getDimension(R.dimen.card_images_gap)));
+
+
+        ViewGroup.LayoutParams paramsLayoutCardTermContainer = holder.view.findViewById(R.id.card_term_container).getLayoutParams();
+        paramsLayoutCardTermContainer.width = ViewGroup.LayoutParams.MATCH_PARENT;
+
+
+        ViewGroup.LayoutParams paramsLayout2 = (ViewGroup.LayoutParams) holder.errorImage.getLayoutParams();
+        paramsLayout2.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsLayout2.height = (int) (mContext.getResources().getDimension(R.dimen.image_small_height));
     }
 }

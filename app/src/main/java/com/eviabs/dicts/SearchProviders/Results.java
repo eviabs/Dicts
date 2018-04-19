@@ -1,11 +1,11 @@
-package com.eviabs.dicts.Dictionaries;
+package com.eviabs.dicts.SearchProviders;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * An abstract calss that "wraps" every Results class.
- * Basically the error is held in here, and is hidden from the user.
+ * The "error" data member is held in here and is hidden from the user.
  */
 public abstract class Results {
     @SerializedName("error")

@@ -1,6 +1,6 @@
-package com.eviabs.dicts.Dictionaries.Wikipedia;
+package com.eviabs.dicts.SearchProviders.Wikipedia;
 
-import com.eviabs.dicts.Dictionaries.Results;
+import com.eviabs.dicts.SearchProviders.Results;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

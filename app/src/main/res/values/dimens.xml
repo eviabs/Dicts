@@ -19,4 +19,7 @@
     <!-- Card warning info-->
     <dimen name="image_small_height">90dp</dimen>
     <dimen name="image_height">100dp</dimen>
+
+    <!-- Card images-->
+    <dimen name="card_images_gap">3dp</dimen>
 </resources>

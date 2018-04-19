@@ -7,9 +7,9 @@ import android.webkit.URLUtil;
 
 import com.eviabs.dicts.ApiClients.ApiConsts;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
-
-import retrofit2.Retrofit;
 
 /**
  * This class wraps the SharedPreferences objects which is modified by the SettingsFragment.
@@ -25,9 +25,8 @@ public class LocalPreferences {
     private static final String SETTINGS_CUSTOM_SERVER_URL = "custom_server_url";
     private static final String SETTINGS_CUSTOM_SEARCH_PROVIDERS = "custom_search_providers";
     private static final String SETTINGS_SEARCH_PROVIDER_IMAGES = "search_provider_images";
-    private static final String SETTINGS_SEARCH_PROVIDER_WIKIPEDIA = "search_provider_wikipedia";
-    private static final String SETTINGS_SEARCH_PROVIDER_MORFIX = "search_provider_morfix";
-    private static final String SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY = "search_provider_urban_dictionary";
+    private static final String SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST = "custom_search_providers_list";
+
 
     // Settings default value
     private static final boolean DEFAULT_SETTINGS_INITIALIZED = false;
@@ -37,9 +36,9 @@ public class LocalPreferences {
     private static final String DEFAULT_SETTINGS_CUSTOM_SERVER_URL = "http://10.0.0.5/";
     private static final boolean DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS = false;
     private static final boolean DEFAULT_SETTINGS_SEARCH_PROVIDER_IMAGES = true;
-    private static final boolean DEFAULT_SETTINGS_SEARCH_PROVIDER_WIKIPEDIA = true;
-    private static final boolean DEFAULT_SETTINGS_SEARCH_PROVIDER_MORFIX = true;
-    private static final boolean DEFAULT_SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY = true;
+    private static final Set<String> DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST = new HashSet<String>(Arrays.asList(ApiConsts.SEARCH_PROVIDERS));
+
+
 
 
     private SharedPreferences prefs;
@@ -59,9 +58,8 @@ public class LocalPreferences {
             prefs.edit().putString(SETTINGS_CUSTOM_SERVER_URL, DEFAULT_SETTINGS_CUSTOM_SERVER_URL).apply();
             prefs.edit().putBoolean(SETTINGS_CUSTOM_SEARCH_PROVIDERS, DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS).apply();
             prefs.edit().putBoolean(SETTINGS_SEARCH_PROVIDER_IMAGES, DEFAULT_SETTINGS_SEARCH_PROVIDER_IMAGES).apply();
-            prefs.edit().putBoolean(SETTINGS_SEARCH_PROVIDER_WIKIPEDIA, DEFAULT_SETTINGS_SEARCH_PROVIDER_WIKIPEDIA).apply();
-            prefs.edit().putBoolean(SETTINGS_SEARCH_PROVIDER_MORFIX, DEFAULT_SETTINGS_SEARCH_PROVIDER_MORFIX).apply();
-            prefs.edit().putBoolean(SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY, DEFAULT_SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY).apply();
+            prefs.edit().putStringSet(SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST, DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST).apply();
+
         }
     }
 
@@ -81,24 +79,32 @@ public class LocalPreferences {
         return prefs.getBoolean(SETTINGS_CUSTOM_SERVER, DEFAULT_SETTINGS_CUSTOM_SERVER);
     }
 
-    public boolean isCustomSearchProvider() {
+    private boolean isCustomSearchProvider() {
         return prefs.getBoolean(SETTINGS_CUSTOM_SEARCH_PROVIDERS, DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS);
+    }
+
+    public Set<String> getSearchProviders() {
+        if (isCustomSearchProvider()) {
+            return prefs.getStringSet(SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST, DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST);
+        }
+
+        return DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST;
+    }
+
+    public void addSearchProviders(String providerToAdd) {
+        Set<String> currentSet = getSearchProviders();
+        currentSet.add(providerToAdd);
+        prefs.edit().putStringSet(SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST, currentSet).apply();
+    }
+
+    public void removeSearchProviders(String providerToRemove) {
+        Set<String> currentSet = getSearchProviders();
+        currentSet.remove(providerToRemove);
+        prefs.edit().putStringSet(SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST, currentSet).apply();
     }
 
     public boolean isCustomSearchProviderImages() {
         return !isCustomSearchProvider() || prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_IMAGES, DEFAULT_SETTINGS_SEARCH_PROVIDER_IMAGES);
-    }
-
-    public boolean isCustomSearchProviderWikipedia() {
-        return !isCustomSearchProvider() || prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_WIKIPEDIA, DEFAULT_SETTINGS_SEARCH_PROVIDER_WIKIPEDIA);
-    }
-
-    public boolean isCustomSearchProviderMorfix() {
-        return !isCustomSearchProvider() || prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_MORFIX, DEFAULT_SETTINGS_SEARCH_PROVIDER_MORFIX);
-    }
-
-    public boolean isCustomSearchProviderUrbanDictionary() {
-        return !isCustomSearchProvider() || prefs.getBoolean(SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY, DEFAULT_SETTINGS_SEARCH_PROVIDER_URBAN_DICTIONARY);
     }
 
     public static boolean isValidURL(String url){

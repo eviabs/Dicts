@@ -25,22 +25,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ScrollView;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.eviabs.dicts.ApiClients.ClientFactory;
 import com.eviabs.dicts.ApiClients.ApiConsts;
-import com.eviabs.dicts.ApiClients.AutocompleteClient;
 import com.eviabs.dicts.Fragments.SearchResultsFragment;
 import com.eviabs.dicts.Fragments.SettingsFragment;
 import com.eviabs.dicts.R;
+import com.eviabs.dicts.SearchProviders.Autocomplete.GoogleAutocomplete;
 import com.eviabs.dicts.Utils.LocalPreferences;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -49,14 +47,10 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = MainActivity.class.getSimpleName() + "@asw!";
-
-    private final String FRAGMENTS_SET_UP = "fragments_set_up";
 
     private final SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
 
@@ -67,13 +61,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Settings
     };
 
-    private boolean fragmentsSetUp = false;
-
     private FragmentType currentShownFragment = FragmentType.Search;
 
     private MaterialSearchView searchView = null;
 
-    private final Context context = this;
+    public final Context context = this;
 
     private Snackbar snackbar = null;
 
@@ -82,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean doubleBackToExitPressedOnce = false;
 
     private int doubleBackToExitPressedOnceDuration = 2000; // length of Toast.LENGTH_SHORT
+
+    private String lastSearchedTerm = "";
+
+    private boolean searchViewQueryTextChangeProgrammatically = false;
 
 
     @Override
@@ -187,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                lastSearchedTerm = query;
                 search(query);
 
                 // return true if you don't want dismiss the search bar
@@ -195,7 +192,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                setSuggestions(newText);
+                if (!searchViewQueryTextChangeProgrammatically) {
+                    if (newText.length() <= 1) {
+                        searchView.setSuggestions(new String[]{""});
+                        searchView.dismissSuggestions();
+
+                    } else {
+                        setSuggestions(newText);
+                    }
+                }
+
+                searchViewQueryTextChangeProgrammatically = false;
 
                 // return true if you don't want dismiss the search bar
                 return false;
@@ -205,7 +212,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
-                //Do some magic
+                searchViewQueryTextChangeProgrammatically = true;
+                searchView.setQuery(lastSearchedTerm, false);
+                searchView.setSuggestions(new String[] {""});
+                searchView.dismissSuggestions();
+
             }
 
             @Override
@@ -219,56 +230,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setSuggestions(String term) {
-        // don't search the web if string is too short
-        if (term != null && term.length() > 1) {
 
-            // clear old suggestions
-            searchView.setSuggestions(new String[] {});
-
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl(AutocompleteClient.BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create());
-
-            AutocompleteClient client = builder.build().create(AutocompleteClient.class);
-            Call<ResponseBody> call = client.getSuggestions(term, AutocompleteClient.CLIENT_JSON, AutocompleteClient.LANGUAGE);
-
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    try {
-                        searchView.setSuggestions(responseToArrayOfSuggestions(response.body().string()));
-                    } catch (IOException ex) {
-                        // do nothing
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Log.d(TAG, t.getMessage());
-                }
-
-                private String[] responseToArrayOfSuggestions(String body) throws IOException {
-                    // clean the response and split to array of strings
-                    String cleanedBodyStr = StringEscapeUtils.unescapeJava(body.replaceAll(AutocompleteClient.BAD_CHARS, ""));
-                    String[] arrSuggestions = cleanedBodyStr.split(AutocompleteClient.DELIMITER);
-
-                    // remove the first (and duplicate) result
-                    if (arrSuggestions.length > 0) {
-                        arrSuggestions = Arrays.copyOfRange(arrSuggestions, 1, arrSuggestions.length);
-                    }
-
-                    // force max num of suggestions
-                    if (arrSuggestions.length > getLocalPreferences().getNumOfSuggestions()) {
-                        arrSuggestions = Arrays.copyOfRange(arrSuggestions, 0, getLocalPreferences().getNumOfSuggestions());
-                    }
-
-                    // sort and return
-                    Arrays.sort(arrSuggestions);
-
-                    return arrSuggestions;
-                }
-            });
+        if (term == null) {
+            return;
         }
+        Bundle queryBundle = new Bundle();
+        queryBundle.putString(ApiConsts.QUERY_BUNDLE_TERM, term);
+        Call<ResponseBody> call = ClientFactory.getCall(queryBundle, ApiConsts.SEARCH_PROVIDER_AUTOCOMPLETE, null);
+
+        if (call == null) {
+            return;
+        }
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    searchView.setSuggestions((new GoogleAutocomplete(response.body().string())).getSuggestions(getLocalPreferences().getNumOfSuggestions()));
+
+                    searchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            String query = (String) parent.getItemAtPosition(position);
+                            searchView.setQuery(query, false);
+                        }
+                    });
+                } catch (IOException ex) {
+                    // do nothing
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, t.getMessage());
+            }
+        });
     }
 
     @Override
@@ -315,17 +311,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param buttonTxt The text on button
      */
     public void showSnack(String text, int length, String buttonTxt) {
-        dismissSnack();
-        View parentLayout = findViewById(android.R.id.content);
-        snackbar = Snackbar.make(parentLayout, text, length)
-                .setAction(buttonTxt, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Do nothing
-                    }
-                })
-                .setActionTextColor(getResources().getColor(android.R.color.holo_red_light));
-        snackbar.show();
+        showSnack(text, length, buttonTxt, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Do nothing
+            }
+        });
     }
 
     /**
@@ -345,54 +336,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public void showToast(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Get a list of the required permissions needed by the app (as in the manifest)
-     *
-     * @return an array of permissions
-     */
-    public String[] getRequiredPermissions() {
-        String[] permissions = null;
-        try {
-            permissions = getPackageManager().getPackageInfo(getPackageName(),
-                    PackageManager.GET_PERMISSIONS).requestedPermissions;
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        if (permissions == null) {
-            return new String[0];
-        } else {
-            return permissions.clone();
-        }
-    }
-
-    /**
-     * Get a list of the required permissions that are still needed by the app (as in the manifest).
-     * Those permissions where not given or were taken away during runtime.
-     *
-     * @return an array of permissions
-     */
-    @NonNull
-    public String[] requiredPermissionsStillNeeded() {
-
-        Set<String> permissions = new HashSet<String>();
-        for (String permission : getRequiredPermissions()) {
-            permissions.add(permission);
-        }
-        for (Iterator<String> i = permissions.iterator(); i.hasNext(); ) {
-            String permission = i.next();
-
-            if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-                Log.d(MainActivity.class.getSimpleName(), "Permission: " + permission + " already granted.");
-                i.remove();
-            } else {
-                Log.d(MainActivity.class.getSimpleName(), "Permission: " + permission + " not yet granted.");
-            }
-        }
-        return permissions.toArray(new String[permissions.size()]);
     }
 
     /**
@@ -483,14 +426,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      *
      */
         public void setupFragments() {
-//        Log.d(TAG, "enters setupFragments");
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        Log.d(TAG, "fragments: " + fragmentManager.getFragments().size());
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.main_container, searchResultsFragment);
-        fragmentTransaction.commit();
-    }
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.main_container, searchResultsFragment);
+            fragmentTransaction.commit();
+        }
 
     /**
      * Perform a search operation.
