@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="30sp"
-            android:textIsSelectable="true"
+            android:textIsSelectable="false"
             android:layout_marginEnd="@dimen/dictionary_icon_size"
             android:fontFamily="@font/linlibertine_r"
             tools:text="title" />

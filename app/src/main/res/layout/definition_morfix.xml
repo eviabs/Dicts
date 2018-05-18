@@ -17,16 +17,27 @@
             android:padding="@dimen/card_padding_small"
             android:layout_marginEnd="@dimen/dictionary_icon_size">
 
+            <LinearLayout
+                android:id="@+id/sound_layout"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                >
+
+            </LinearLayout>
+
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textViewMorfixWord"
                 style="@android:style/TextAppearance.Holo.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
+                android:layout_toEndOf="@+id/sound_layout"
                 android:layout_alignParentTop="true"
                 android:textColor="@color/colorMorfixTitle"
                 android:textSize="24sp"
-                android:textIsSelectable="true"
+                android:textIsSelectable="false"
                 tools:text="word"
                 android:text="word" />
 
@@ -42,7 +53,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:textSize="14sp"
-                android:textIsSelectable="true"
+                android:textIsSelectable="false"
                 tools:text="part"
                 android:text="part" />
 
@@ -51,11 +62,11 @@
                 style="@android:style/TextAppearance.Holo.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
+                android:layout_toEndOf="@+id/sound_layout"
                 android:layout_below="@+id/textViewMorfixPartOfSpeech"
                 android:textColor="@color/colorMorfixTitle"
                 android:textSize="15sp"
-                android:textIsSelectable="true"
+                android:textIsSelectable="false"
                 android:textStyle="italic"
                 tools:text="Inflections"
                 android:text="Inflections" />
@@ -80,7 +91,7 @@
             android:layout_marginTop="25dp"
             android:layout_marginBottom="@dimen/card_margin"
             android:textSize="18sp"
-            android:textIsSelectable="true"
+            android:textIsSelectable="false"
             tools:text="definition" />
 
         <LinearLayout
@@ -98,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorMorfixTitle"
                 android:textSize="15sp"
-                android:textIsSelectable="true"
+                android:textIsSelectable="false"
                 tools:text="Examples:"
                 android:text="Examples:" />
 
@@ -145,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorMorfixTitle"
                 android:textSize="15sp"
-                android:textIsSelectable="true"
+                android:textIsSelectable="false"
                 tools:text="Synonyms:"
                 android:text="Synonyms:" />
 
@@ -156,12 +167,11 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorBlack"
                 android:textSize="15sp"
-                android:textIsSelectable="true"
+                android:textIsSelectable="false"
                 tools:text="Synonyms:"
                 android:text="Synonyms..." />
 
         </LinearLayout>
-
     </LinearLayout>
 </LinearLayout>
 

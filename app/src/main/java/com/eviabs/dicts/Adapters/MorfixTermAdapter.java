@@ -2,8 +2,10 @@ package com.eviabs.dicts.Adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -14,6 +16,7 @@ import com.eviabs.dicts.SearchProviders.Morfix.MorfixUtils;
 import com.eviabs.dicts.SearchProviders.Morfix.Word;
 import com.eviabs.dicts.SearchProviders.Results;
 import com.eviabs.dicts.R;
+import com.eviabs.dicts.Utils.SoundPlayer;
 import com.google.gson.Gson;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
@@ -22,7 +25,6 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 
 public class MorfixTermAdapter extends TermAdapter {
-
     public class MyViewHolder extends TermAdapterViewHolder {
 
         public CardView card;
@@ -37,6 +39,9 @@ public class MorfixTermAdapter extends TermAdapter {
 
         public LinearLayout synonymsLayout;
         public TextView synonyms;
+
+        public SoundPlayer soundPlayer = null;
+        public LinearLayout soundLayout;
 
         public MyViewHolder(View view) {
             super(view);
@@ -54,6 +59,8 @@ public class MorfixTermAdapter extends TermAdapter {
 
             synonymsLayout = view.findViewById(R.id.containerMorfixSynonyms);
             synonyms = view.findViewById(R.id.textViewMorfixSynonyms);
+
+            soundLayout = view.findViewById(R.id.sound_layout);
 
         }
     }
@@ -97,7 +104,16 @@ public class MorfixTermAdapter extends TermAdapter {
             holder.synonyms.setText(synonyms);
         }
 
+        if (term.getWords().get(0).getInputLanguageMeanings().get(0).get(0).getSoundURL() != null || term.getWords().get(0).getInputLanguageMeanings().get(0).get(0).getSoundURL().equals("")) {
+            holder.soundLayout.setVisibility(View.VISIBLE);
+            if (holder.soundPlayer != null) {
+                holder.soundPlayer.release();
+            }
 
+            holder.soundPlayer = new SoundPlayer(mContext, Uri.parse(term.getWords().get(0).getInputLanguageMeanings().get(0).get(0).getSoundURL()), holder.soundLayout);
+        } else {
+            holder.soundLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
