@@ -127,7 +127,7 @@ public class MorfixTermAdapter extends TermAdapter {
             holder.synonyms.setText(synonyms);
         }
 
-        if (term.getWords().get(0).getInputLanguageMeanings().get(0).get(0).getSoundURL() != null || term.getWords().get(0).getInputLanguageMeanings().get(0).get(0).getSoundURL().equals("")) {
+        if (term.getWords().get(0).getInputLanguageMeanings().get(0).get(0).getSoundURL() != null && !term.getWords().get(0).getInputLanguageMeanings().get(0).get(0).getSoundURL().equals("")) {
             holder.soundLayout.setVisibility(View.VISIBLE);
             if (holder.soundPlayer != null) {
                 holder.soundPlayer.release();
