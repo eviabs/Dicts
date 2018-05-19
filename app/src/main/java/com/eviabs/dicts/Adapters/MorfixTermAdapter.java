@@ -5,10 +5,12 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.eviabs.dicts.SearchProviders.Morfix.MorfixResults;
@@ -89,6 +91,27 @@ public class MorfixTermAdapter extends TermAdapter {
         holder.partOfSpeech.setText(currentWord.getPartOfSpeech());
         holder.inflections.setText(MorfixUtils.inflectionsToString(currentWord.getInflections()));
         holder.definition.setText(currentWord.getOutputLanguageMeaningsString());
+
+        // Change layout if word is to long
+        float wordSize = holder.word.getPaint().measureText(currentWord.getInputLanguageMeanings().get(0).get(0).getDisplayText());
+        float partOfSpeechSize = holder.partOfSpeech.getPaint().measureText(currentWord.getPartOfSpeech());
+        float layoutSize = holder.card.getMeasuredWidth();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        if (0.6 * layoutSize > (wordSize + partOfSpeechSize)) {
+            params.addRule(RelativeLayout.ALIGN_BASELINE, R.id.textViewMorfixWord);
+            params.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.textViewMorfixWord);
+            params.removeRule(RelativeLayout.BELOW);
+            params.addRule(RelativeLayout.END_OF, R.id.textViewMorfixWord);
+            holder.partOfSpeech.setLayoutParams(params);
+
+        } else {
+            params.removeRule(RelativeLayout.ALIGN_BASELINE);
+            params.removeRule(RelativeLayout.ALIGN_BOTTOM);
+            params.addRule(RelativeLayout.BELOW, R.id.textViewMorfixWord);
+            params.addRule(RelativeLayout.END_OF, R.id.sound_layout);
+            holder.partOfSpeech.setLayoutParams(params);
+        }
 
         holder.exampleLayout.setVisibility(View.GONE);
         String examples = MorfixUtils.examplesToString(currentWord.getSampleSentences());

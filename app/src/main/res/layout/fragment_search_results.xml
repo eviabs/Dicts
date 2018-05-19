@@ -78,6 +78,7 @@
                     android:layout_height="120dp"
                     android:src="@drawable/search"
                     android:gravity="center"
+                    android:visibility="invisible"
                     />
 
                 <TextView
