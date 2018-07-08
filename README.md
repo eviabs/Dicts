@@ -218,7 +218,7 @@ We will now demonstrate how to add a new search provider to the app. For this pr
     Let's take a look at the important things in here:
     * If you've already used [RecyclerView](https://developer.android.com/guide/topics/ui/layout/recyclerview) before, you may see that the `MyViewHolder` class is a standard `ViewHolder` that is used to connect to the layout we have just created.
     * Create a `WikipediaTermAdapter` constructor that calls its super class constructor.
-    * Override the method `InnerTermViewHolder` as shows. This way, we make sure that the super class gets the correct `MyViewHolder` class.
+    * Override the method `InnerTermViewHolder` as shown. This way, we make sure that the super class gets the correct `MyViewHolder` class.
     * Implement the abstract method `setDefinitionLayout`. This method sets the layput as you wish. Not that we take the method's parameters and downcast them to the classes we have just created. It's your responsibility to make sure that you make the correct cast.
     * Implement the abstract method `createResultsObject` which uses [Gson](https://github.com/google/gson) to convert our json response to our java objects.
     * Implement the abstract method `getDefinitionLayoutId` which return the appropriate layout id.
