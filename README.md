@@ -22,6 +22,7 @@ If you wish to add your own search providers or remove the default ones, there a
 
 ### Add a Dictionary 
 We will now demonstrate how to add a new search provider to the app. For this practice, we will add Wikipedia.
+*Note that there are few superclasses that you will extend in order to add a provider. Those superclasses will take care of most of the app's functionality (e.g. showing "no results" card when no results are available. or showing "server error" card with a retry button when an error occurs). You could override any of the superclass' methods if you with to achieve more complex behavior. In such case, the code is documented and you are advised to go throgh it.*
 
 1) First, make sure that your server (see [server repo](https://github.com/eviabs/web-dicts)) supports your search provider (see [server repo](https://github.com/eviabs/web-dicts/blob/master/README.md#add-seach-provider))
 
