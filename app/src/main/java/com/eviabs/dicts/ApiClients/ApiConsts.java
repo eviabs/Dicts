@@ -17,7 +17,7 @@ public class ApiConsts {
     public static final int ERROR_CODE_SEARCHING = 666; // searching
 
     // Server URL
-    public static String SERVER_BASE_URL = "https://web-dicts.herokuapp.com/";
+    public static String SERVER_BASE_URL = "http://ec2-34-209-57-147.us-west-2.compute.amazonaws.com:3333/";
 
     // Query Bundle
     public static final String QUERY_BUNDLE_TERM = "term";
@@ -25,18 +25,15 @@ public class ApiConsts {
 
     public static final String SEARCH_PROVIDER_AUTOCOMPLETE = "autocomplete";
     public static final String DICTIONARY_IMAGES = "Images";
+    public static final String DICTIONARY_MILOG = "Milog";
     public static final String DICTIONARY_MORIFX = "Morfix";
     public static final String DICTIONARY_URBAN_DICTIONARY = "Urban Dictionary";
     public static final String DICTIONARY_WIKIPEDIA = "Wikipedia";
 
-//    public static final String[] SEARCH_PROVIDERS = {
-//            DICTIONARY_IMAGES,
-//            DICTIONARY_MORIFX,
-//    };
-
     public static final String[] SEARCH_PROVIDERS = {
             DICTIONARY_IMAGES,
             DICTIONARY_MORIFX,
+            DICTIONARY_MILOG,
             DICTIONARY_WIKIPEDIA,
             DICTIONARY_URBAN_DICTIONARY
     };

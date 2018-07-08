@@ -33,7 +33,7 @@ public class LocalPreferences {
     private static final int DEFAULT_SETTINGS_NUM_OF_IMAGES_TO_SHOW = 20;
     private static final int DEFAULT_SETTINGS_NUM_OF_SEGGESTIONS = 5;
     private static final boolean DEFAULT_SETTINGS_CUSTOM_SERVER = false;
-    private static final String DEFAULT_SETTINGS_CUSTOM_SERVER_URL = "http://10.0.0.5/";
+    private static final String DEFAULT_SETTINGS_CUSTOM_SERVER_URL = "https://web-dicts.herokuapp.com/";
     private static final boolean DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS = false;
     private static final boolean DEFAULT_SETTINGS_SEARCH_PROVIDER_IMAGES = true;
     private static final Set<String> DEFAULT_SETTINGS_CUSTOM_SEARCH_PROVIDERS_LIST = new HashSet<String>(Arrays.asList(ApiConsts.SEARCH_PROVIDERS));

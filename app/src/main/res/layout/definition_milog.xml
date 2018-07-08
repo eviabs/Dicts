@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="25dp"
+    android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@android:style/TextAppearance.Holo.Large"
+            android:id="@+id/textViewMilogTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="26sp"
+            android:textIsSelectable="false"
+            android:textColor="#4f91cd"
+            android:layout_marginEnd="@dimen/dictionary_icon_size"
+            android:fontFamily="@font/narkissnewbold"
+            tools:text="כותרת" />
+
+        <com.ms.square.android.expandabletextview.ExpandableTextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/textViewMilogDefinition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            expandableTextView:maxCollapsedLines="6"
+            expandableTextView:animDuration="200"
+            >
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@id/expandable_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/narkissnewlight"
+                android:textSize="18sp"
+                />
+            <ImageButton
+                android:id="@id/expand_collapse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_gravity="right|bottom"
+                android:background="@android:color/transparent"/>
+        </com.ms.square.android.expandabletextview.ExpandableTextView>
+
+
+
+
+
+</LinearLayout>

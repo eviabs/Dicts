@@ -17,6 +17,9 @@ public class ClientFactory {
      * Add your api calls here.
      */
     interface Client {
+        @GET("/dic/milog")
+        Call<ResponseBody> getMilogDefinitions(@Query("t") String term);
+
         @GET("/dic/morfix")
         Call<ResponseBody> getMorfixDefinitions(@Query("t") String term);
 
@@ -47,10 +50,16 @@ public class ClientFactory {
     public static Call<ResponseBody> getCall(Bundle queryBundle, String searchProvider, String url) {
         switch (searchProvider) {
             case ApiConsts.DICTIONARY_IMAGES:
-                return getClient(url).getQwantImages(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM), queryBundle.getInt("images_num"));
+            //  Until AWS issue is fixed on the server, we will ALWAYS search images using Heroku...
+            //  return getClient(url).getQwantImages(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM), queryBundle.getInt("images_num"));
+
+                return getClient("https://web-dicts.herokuapp.com/").getQwantImages(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM), queryBundle.getInt("images_num"));
 
             case ApiConsts.DICTIONARY_MORIFX:
                 return getClient(url).getMorfixDefinitions(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM));
+
+                case ApiConsts.DICTIONARY_MILOG:
+                return getClient(url).getMilogDefinitions(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM));
 
             case ApiConsts.DICTIONARY_URBAN_DICTIONARY:
                 return getClient(url).getUrbanDictionaryDefinitions(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM));

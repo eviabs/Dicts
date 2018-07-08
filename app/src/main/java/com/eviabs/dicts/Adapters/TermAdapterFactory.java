@@ -21,6 +21,9 @@ public class TermAdapterFactory {
             case ApiConsts.DICTIONARY_IMAGES:
                 return new QwantImagesAdapter(mContext, error, responseBody, retryOnClickListener);
 
+            case ApiConsts.DICTIONARY_MILOG:
+                return new MilogTermAdapter(mContext, error, responseBody, retryOnClickListener);
+
             case ApiConsts.DICTIONARY_MORIFX:
                 return new MorfixTermAdapter(mContext, error, responseBody, retryOnClickListener);
 
