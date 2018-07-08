@@ -148,7 +148,9 @@ We will now demonstrate how to add a new search provider to the app. For this pr
 
     </LinearLayout>
     ```
-    This layout consist of 2 `TextView` which hold the title and the extract (defenition)  of the search result.
+    This layout consist of 2 `TextView` which hold the title and the extract (defenition)  of the search result. It looks like that:
+    ![wiki_layout](https://user-images.githubusercontent.com/14614396/42425133-ef2f899c-8320-11e8-8088-9cb197c1fcec.png)
+
     
 6) Now, we will create an adapter under `Adapters` package that is called `WikipediaTermAdapter`.
    This adapter is a subclass of `TermAdapter`. The superclass will take care of most of the hard work.
@@ -239,7 +241,19 @@ We will now demonstrate how to add a new search provider to the app. For this pr
     ```
     And that's it.
 
-     
+### Remove Dictionaries
+To remove search providers Go to `ApiConsts` class under `ApiClients` package, and remove the unwanted providers from the array `SEARCH_PROVIDERS`:
+```java
+      public static final String[] SEARCH_PROVIDERS = {
+           DICTIONARY_IMAGES,
+           // DICTIONARY_MORIFX, <- Remove this line
+           // DICTIONARY_MILOG, <- Remove this line
+           DICTIONARY_WIKIPEDIA,
+           DICTIONARY_URBAN_DICTIONARY
+      };
+ ```
+ Now olny images, wikipedia and urban dictionary are available throughout the app.
+         
 ## Authors
 
 **Evyatar Ben-Shitrit** - [eviabs](https://github.com/eviabs)
