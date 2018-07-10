@@ -52,7 +52,6 @@ public class ClientFactory {
             case ApiConsts.DICTIONARY_IMAGES:
             //  Until AWS issue is fixed on the server, we will ALWAYS search images using Heroku...
             //  return getClient(url).getQwantImages(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM), queryBundle.getInt("images_num"));
-
                 return getClient("https://web-dicts.herokuapp.com/").getQwantImages(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM), queryBundle.getInt("images_num"));
 
             case ApiConsts.DICTIONARY_MORIFX:
@@ -68,7 +67,7 @@ public class ClientFactory {
                 return getClient(url).getWikipediaDefinitions(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM));
 
             case ApiConsts.SEARCH_PROVIDER_AUTOCOMPLETE:
-                // We need to change the retrofit's url
+                // We need to change the retrofit's url to google's server which is much faster than other alternatives.
                 return getClient("http://suggestqueries.google.com/complete/search/").getAutoCompleteSuggestions(queryBundle.getString("term"), "firefox", "iw");
         }
 

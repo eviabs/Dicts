@@ -20,7 +20,7 @@ import okhttp3.ResponseBody;
 /**
  * An abstract class that resemble a general term adapter.
  * This class takes care of the error handling of search process.
- * It shows the relevant warning when an error occurs, and display the results
+ * It shows the relevant warning when an error occurs, and displays the results
  * when available.
  */
 public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.InnerTermViewHolder> {
@@ -79,30 +79,73 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
         this.errorText =  mContext.getResources().getString(R.string.images_warning_server_error);
     }
 
+    /**
+     * Set the image shown when no images are found
+     * Override this function if want to change the default behaviour.
+     *
+     * @param noTermsFoundImage the image
+     */
     public void setNoTermsFoundImage(Drawable noTermsFoundImage) {
         this.noTermsFoundImage = noTermsFoundImage;
     }
 
+    /**
+     * Set the text shown when no images are found
+     * Override this function if want to change the default behaviour.
+     *
+     * @param noTermsFoundText the text
+     */
     public void setNoTermsFoundText(String noTermsFoundText) {
         this.noTermsFoundText = noTermsFoundText;
     }
 
+    /**
+     * Set the image shown when searching
+     * Override this function if want to change the default behaviour.
+     *
+     * @param searchingImage the image
+     */
     public void setSearchingImage(Drawable searchingImage) {
         this.searchingImage = searchingImage;
     }
 
+    /**
+     * Set the text shown when searching
+     * Override this function if want to change the default behaviour.
+     *
+     * @param searchingText the text
+     */
     public void setSearchingText(String searchingText) {
         this.searchingText = searchingText;
     }
 
+    /**
+     * Set the image shown when error occurs
+     * Override this function if want to change the default behaviour.
+     *
+     * @param errorImage the image
+     */
     public void setErrorImage(Drawable errorImage) {
         this.errorImage = errorImage;
     }
 
+    /**
+     * Set the text shown when error occurs
+     * Override this function if want to change the default behaviour.
+     *
+     * @param errorText the text
+     */
     public void setErrorText(String errorText) {
         this.errorText = errorText;
     }
 
+    /**
+     * Return the error code of the current results.
+     * If the error code wasn't initialized by the constructor (ERROR_CODE_UNINITIALIZED), there
+     * use the results object to determine the error code (the value comes from the server)
+     *
+     * @return error code
+     */
     protected int getError() {
         if (error == ApiConsts.ERROR_CODE_UNINITIALIZED) {
             if (results == null) {
@@ -182,7 +225,17 @@ public abstract class TermAdapter extends RecyclerView.Adapter<TermAdapter.Inner
      */
     protected abstract void setDefinitionLayout(TermAdapter.InnerTermViewHolder holder, int position);
 
+    /**
+     * This function converts the abstract type Results to a concrete type.
+     *
+     * @param responseBody the body of the response
+     * @return a concrete object that implements Results
+     */
     protected abstract Results createResultsObject(ResponseBody responseBody);
 
+    /**
+     * This function connects the layout of the subclass to the card.
+     * @return the id of the definition's layout
+     */
     protected abstract int getDefinitionLayoutId();
 }

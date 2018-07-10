@@ -7,16 +7,34 @@ import android.widget.LinearLayout;
 import com.eviabs.dicts.ApiClients.ApiConsts;
 import com.eviabs.dicts.Fragments.SearchResultsFragment;
 
+/**
+ * This class represents a Search Provider.
+ * It holds all of the data and methods needed for the results fragment to run.
+ */
 public class SearchProvider {
 
+    /**
+     * This class wraps all of the parameters needed for a query to run.
+     * The basic parameter is "term" which must be present in every query!
+     * If you need to pass more parameters, just implement this as you wish.
+     */
     public interface QueryBundleInterface {
         Bundle createQueryBundle(String term);
     }
 
+    /** The name of the provider - must be unique */
     private String name;
+
+    /** The RecyclerView that will display all of the provider's results */
     private RecyclerView recyclerView;
+
+    /** The RecyclerView's orientation. */
     private int orientation;
+
+    /** The RecyclerView's LinearLayout. */
     private LinearLayout searchProviderLayout;
+
+    /** The actual QueryBundleInterface. */
     private QueryBundleInterface queryBundleInterface;
 
     public SearchProvider(String name, RecyclerView recyclerView, int orientation, LinearLayout searchProviderLayout, QueryBundleInterface queryBundleInterface) {

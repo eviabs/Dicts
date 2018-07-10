@@ -6,8 +6,12 @@ import android.support.v7.widget.CardView;
 import android.text.Layout;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
+import com.eviabs.dicts.ApiClients.ApiConsts;
 import com.eviabs.dicts.SearchProviders.Qwant.QwantImage;
 import com.eviabs.dicts.SearchProviders.Qwant.QwantImageResults;
 import com.eviabs.dicts.SearchProviders.Results;
@@ -104,23 +108,49 @@ public class QwantImagesAdapter extends TermAdapter {
             }
         });
 
-        try {
-            // smooth spinner
-            Picasso.get()
-                    .load(term.getImages().get(position).getThumbnail())
-                    .placeholder(new GifDrawable(mContext.getResources(), R.drawable.small_spinner))
-                    .error(R.drawable.ic_suggestion)
-                    .fit()
-                    .into(holder.image);
-            // if failed, load the ugly one :(
-        } catch (IOException ex) {
-            Picasso.get()
-                    .load(term.getImages().get(position).getThumbnail())
-                    .placeholder(R.drawable.image_loading_animation)
-                    .error(R.drawable.ic_suggestion)
-                    .fit()
-                    .into(holder.image);
-        }
+        // Start animation - rotate the spinner
+        RotateAnimation rotate = new RotateAnimation(0, 4320 , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(15000);
+        rotate.setInterpolator(new LinearInterpolator());
+        holder.image.startAnimation(rotate);
+
+        // load the image
+        Picasso.get()
+                .load(term.getImages().get(position).getThumbnail())
+                .placeholder(R.drawable.loading_image)
+                .error(R.drawable.ic_suggestion)
+                .fit()
+                .into(holder.image, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.image.setAnimation(null);
+                    }
+
+                    @Override
+                    public void onError(Exception ex) {
+
+                    }
+                });
+
+
+//      GifDrawable seems to block the mui thread, so we will comment the code until it is fixed.
+//        try {
+//            // smooth spinner
+//            Picasso.get()
+//                    .load(term.getImages().get(position).getThumbnail())
+//                    .placeholder(new GifDrawable(mContext.getResources(), R.drawable.small_spinner))
+//                    .error(R.drawable.ic_suggestion)
+//                    .fit()
+//                    .into(holder.image);
+//            // if failed, load the ugly one :(
+//        } catch (IOException ex) {
+//            Picasso.get()
+//                    .load(term.getImages().get(position).getThumbnail())
+//                    .placeholder(R.drawable.image_loading_animation)
+//                    .error(R.drawable.ic_suggestion)
+//                    .fit()
+//                    .into(holder.image);
+//        }
     }
 
     @Override
@@ -147,6 +177,10 @@ public class QwantImagesAdapter extends TermAdapter {
         super.onBindViewHolder(holder, position);
     }
 
+    /**
+     * We use this function to programmatically change the images recyclerview layout.
+     * @param holder the holder
+     */
     private void changeImagesLayout(InnerTermViewHolder holder) {
         holder.view.findViewById(R.id.card_warning).setPadding(0, 0, 0, 0);
         holder.view.findViewById(R.id.card_warning_info).setPadding(0, 0, 0, 0);

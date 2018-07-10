@@ -23,6 +23,8 @@ public class ApiConsts {
     public static final String QUERY_BUNDLE_TERM = "term";
 
 
+    // search providers namess.
+    // Note: names must be unique
     public static final String SEARCH_PROVIDER_AUTOCOMPLETE = "autocomplete";
     public static final String DICTIONARY_IMAGES = "Images";
     public static final String DICTIONARY_MILOG = "Milog";
@@ -30,6 +32,7 @@ public class ApiConsts {
     public static final String DICTIONARY_URBAN_DICTIONARY = "Urban Dictionary";
     public static final String DICTIONARY_WIKIPEDIA = "Wikipedia";
 
+    // Active search providers. Remove unwanted providers, and add the ones you wish to use.
     public static final String[] SEARCH_PROVIDERS = {
             DICTIONARY_IMAGES,
             DICTIONARY_MORIFX,

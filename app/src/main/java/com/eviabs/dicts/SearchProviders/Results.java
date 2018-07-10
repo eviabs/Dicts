@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * An abstract calss that "wraps" every Results class.
+ * An abstract class that "wraps" every Results class.
  * The "error" data member is held in here and is hidden from the user.
  */
 public abstract class Results {
