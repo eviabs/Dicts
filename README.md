@@ -254,7 +254,7 @@ To remove search providers Go to `ApiConsts` class under `ApiClients` package, a
            DICTIONARY_URBAN_DICTIONARY
       };
  ```
- Now olny images, wikipedia and urban dictionary are available throughout the app.
+ Now only images, wikipedia and urban dictionary are available throughout the app.
          
 ## Authors
 
