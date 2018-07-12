@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.eviabs.dicts.ApiClients.ApiConsts;
 import com.eviabs.dicts.SearchProviders.Qwant.QwantImage;
@@ -33,11 +34,14 @@ public class QwantImagesAdapter extends TermAdapter {
     public class MyViewHolder extends TermAdapterViewHolder {
 
         public ImageView image;
+        public ProgressBar progress;
 
         public MyViewHolder(View view) {
             super(view);
 
             image = (ImageView) view.findViewById(R.id.image_view_list_item_image);
+            progress = (ProgressBar) view.findViewById(R.id.image_view_list_item_progress);
+
 
         }
     }
@@ -108,11 +112,10 @@ public class QwantImagesAdapter extends TermAdapter {
             }
         });
 
-        // Start animation - rotate the spinner
-        RotateAnimation rotate = new RotateAnimation(0, 4320 , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(15000);
-        rotate.setInterpolator(new LinearInterpolator());
-        holder.image.startAnimation(rotate);
+
+        // hide image and show progressbar
+        holder.image.setVisibility(View.INVISIBLE);
+        holder.progress.setVisibility(View.VISIBLE);
 
         // load the image
         Picasso.get()
@@ -121,36 +124,20 @@ public class QwantImagesAdapter extends TermAdapter {
                 .error(R.drawable.ic_suggestion)
                 .fit()
                 .into(holder.image, new com.squareup.picasso.Callback() {
+                    // hide progressbar and show image
+
                     @Override
                     public void onSuccess() {
-                        holder.image.setAnimation(null);
+                        holder.image.setVisibility(View.VISIBLE);
+                        holder.progress.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
                     public void onError(Exception ex) {
-
+                        holder.image.setVisibility(View.VISIBLE);
+                        holder.progress.setVisibility(View.INVISIBLE);
                     }
                 });
-
-
-//      GifDrawable seems to block the mui thread, so we will comment the code until it is fixed.
-//        try {
-//            // smooth spinner
-//            Picasso.get()
-//                    .load(term.getImages().get(position).getThumbnail())
-//                    .placeholder(new GifDrawable(mContext.getResources(), R.drawable.small_spinner))
-//                    .error(R.drawable.ic_suggestion)
-//                    .fit()
-//                    .into(holder.image);
-//            // if failed, load the ugly one :(
-//        } catch (IOException ex) {
-//            Picasso.get()
-//                    .load(term.getImages().get(position).getThumbnail())
-//                    .placeholder(R.drawable.image_loading_animation)
-//                    .error(R.drawable.ic_suggestion)
-//                    .fit()
-//                    .into(holder.image);
-//        }
     }
 
     @Override
