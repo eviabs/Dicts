@@ -105,6 +105,6 @@ public class MorfixResults extends Results {
 
     @Override
     public int getCount() {
-        return this.getWords().size();
+        return (this.getWords() == null) ? 0 : this.getWords().size();
     }
 }

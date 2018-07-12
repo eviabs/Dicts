@@ -52,6 +52,6 @@ public class UrbanDictionaryResults extends Results {
 
     @Override
     public int getCount() {
-        return this.getList().size();
+        return (this.getList() == null) ? 0 : this.getList().size();
     }
 }

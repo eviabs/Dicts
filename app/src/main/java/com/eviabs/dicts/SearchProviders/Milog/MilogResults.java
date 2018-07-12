@@ -29,6 +29,6 @@ public class MilogResults extends Results {
 
     @Override
     public int getCount() {
-        return this.words.size();
+        return (this.getWords() == null) ? 0 : this.getWords().size();
     }
 }
