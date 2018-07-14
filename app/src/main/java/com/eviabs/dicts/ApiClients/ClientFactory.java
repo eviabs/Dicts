@@ -50,14 +50,12 @@ public class ClientFactory {
     public static Call<ResponseBody> getCall(Bundle queryBundle, String searchProvider, String url) {
         switch (searchProvider) {
             case ApiConsts.DICTIONARY_IMAGES:
-            //  Until AWS issue is fixed on the server, we will ALWAYS search images using Heroku...
-            //  return getClient(url).getQwantImages(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM), queryBundle.getInt("images_num"));
-                return getClient("https://web-dicts.herokuapp.com/").getQwantImages(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM), queryBundle.getInt("images_num"));
+                return getClient(url).getQwantImages(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM), queryBundle.getInt("images_num"));
 
             case ApiConsts.DICTIONARY_MORIFX:
                 return getClient(url).getMorfixDefinitions(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM));
 
-                case ApiConsts.DICTIONARY_MILOG:
+            case ApiConsts.DICTIONARY_MILOG:
                 return getClient(url).getMilogDefinitions(queryBundle.getString(ApiConsts.QUERY_BUNDLE_TERM));
 
             case ApiConsts.DICTIONARY_URBAN_DICTIONARY:
