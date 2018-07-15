@@ -175,7 +175,8 @@ public class QwantImagesAdapter extends TermAdapter {
 
         CardView cardView = (CardView) holder.view.findViewById(R.id.card_term);
 
-        cardView.setBackgroundColor(mContext.getResources().getColor(R.color.colorTransparent));
+        cardView.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorTransparent));
+        cardView.setRadius(0);
         cardView.setPadding(0, 0, 0, 0);
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
