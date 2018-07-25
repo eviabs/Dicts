@@ -1,5 +1,6 @@
 package com.eviabs.dicts.Fragments;
 
+import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;

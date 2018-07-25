@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // Perform the search
-        searchResultsFragment.search(query);
+        searchResultsFragment.search(query, this);
     }
 
     /**

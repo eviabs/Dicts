@@ -1,5 +1,6 @@
 package com.eviabs.dicts.Fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ public class SearchResultsFragment extends Fragment {
     private String TAG = SearchResultsFragment.class.getSimpleName() + "@asw!";
     private SearchProvidersManager searchProvidersManager = null;
     private View view = null;
+    private MainActivity mainActivity;
 
     /**
      * Default empty Ctor
@@ -76,8 +78,11 @@ public class SearchResultsFragment extends Fragment {
      * We also hide the search providers that were removed by the user.
      *
      * @param query the search term.
+     * @param mainActivity reference to the main activity.
      */
-    public void search(String query) {
+    public void search(String query, MainActivity mainActivity) {
+
+        this.mainActivity = mainActivity;
 
         // hide the startup warnings
         safeSetVisibility(view.findViewById(R.id.container_dictionaries_warning), View.GONE);
@@ -92,7 +97,7 @@ public class SearchResultsFragment extends Fragment {
      * @return local LocalPreferences object.
      */
     public LocalPreferences getLocalPreferences() {
-        return ((MainActivity) getActivity()).getLocalPreferences();
+        return mainActivity.getLocalPreferences();
     }
 
     /**
@@ -118,5 +123,17 @@ public class SearchResultsFragment extends Fragment {
         if (view != null) {
             view.setVisibility(visibility);
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mainActivity = (MainActivity) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mainActivity = null;
     }
 }
