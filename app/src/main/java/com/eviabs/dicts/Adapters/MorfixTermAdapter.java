@@ -98,7 +98,7 @@ public class MorfixTermAdapter extends TermAdapter {
         float layoutSize = holder.card.getMeasuredWidth();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        if (0.6 * layoutSize > (wordSize + partOfSpeechSize)) {
+        if (0.6 * layoutSize > (wordSize + partOfSpeechSize) || holder.word.length() < 10) {
             params.addRule(RelativeLayout.ALIGN_BASELINE, R.id.textViewMorfixWord);
             params.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.textViewMorfixWord);
             params.removeRule(RelativeLayout.BELOW);
