@@ -6,8 +6,8 @@ android {
         applicationId "com.eviabs.dicts"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 8
-        versionName "1.42"
+        versionCode 9
+        versionName "1.43"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -54,8 +54,12 @@ public class MilogTermAdapter extends TermAdapter {
         StringBuilder concatDefinitions = new StringBuilder();
 
         for (String def: term.getWords().get(position).getDefinitions()) {
-            concatDefinitions.append(def);
+            concatDefinitions.append(def).append(", ");
         }
+
+        // remove redundant comma (", ")
+        if (concatDefinitions.length() != 0) concatDefinitions.deleteCharAt(concatDefinitions.length()-2);
+
         myViewHolder.definition.setText(Html.fromHtml(concatDefinitions.toString()));
     }
 
