@@ -12,20 +12,20 @@ Android app that shows results from several search providers.
 
 
 ## Download
-App is available at play store, but you are welcome to download the source code and use it as you please.
+App is available on Google Play Store, but you are welcome to download the source code and use it as you please.
 
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="30%" height="30%">](https://play.google.com/store/apps/details?id=com.eviabs.dicts)
 
 ## Modify the Dictionaries (Search Providers)
 The app comes with some default dictionaries (which are called Search Providers).
-If you wish to add your own search providers or remove the default ones, there are several steps to achieve that.
+If you wish to add your own search providers or remove the default ones, there are several steps to complete.
 
 ### Add a Dictionary 
-We will now demonstrate how to add a new search provider to the app. For this practice, we will add Wikipedia.
+We will now demonstrate how to add a new search provider to the app. For this practice, we will add *Wikipedia*.
 
 *Note that there are few superclasses that you will extend in order to add a provider. Those superclasses will take care of most of the app's functionality (e.g. showing "no results" card when no results are available. or showing "server error" card with a retry button when an error occurs). You could override any of the superclass' methods if you want to achieve more complex behavior. In such case, the code is documented and you are advised to go through it.*
 
-1) First, make sure that your server (see [server repo](https://github.com/eviabs/web-dicts)) supports your search provider (see [server repo](https://github.com/eviabs/web-dicts/blob/master/README.md#add-seach-provider))
+1) First, make sure that your server (see [server repo](https://github.com/eviabs/web-dicts)) supports your search provider (see [add search provider](https://github.com/eviabs/web-dicts/blob/master/README.md#add-search-provider))
 
 2) Go to `ApiConsts` class under `ApiClients` package, and add the following String: 
 
@@ -65,7 +65,7 @@ We will now demonstrate how to add a new search provider to the app. For this pr
     }
     ```
      
-4) Now, we will create Java objects that wraps our json response from the server.
+4) Now, we will create Java objects that wrap our json response from the server.
    
    You can use [jsonschema2pojo](http://www.jsonschema2pojo.org/) to generate the appropriate java objects.
    
@@ -113,9 +113,9 @@ We will now demonstrate how to add a new search provider to the app. For this pr
     ```
     There are 2 important things to notice:
     * On the constructor `WikipediaResults`, the parameter `error` must be set by the super class constructor: `super(error)`.
-    * You must override the method `getCount()` which tells to the objects how naby results are available. In our case, there is a single result if the title is not empty.
+    * You must override the method `getCount()` which tells us how many results are available. In our case, there is a single result if the title is not empty.
 
-5) Now, we will create a layout for our data. This layout will be shoen inside the results cards.
+5) Now, we will create a layout for our data. This layout will be shown inside the results cards.
    Under `res/layout` create an xml layout file called `definition_wikipedia.xml`:
 
    ```xml 
@@ -150,7 +150,7 @@ We will now demonstrate how to add a new search provider to the app. For this pr
 
     </LinearLayout>
     ```
-    This layout consist of 2 `TextView` which hold the title and the extract (defenition)  of the search result. It looks like that:
+    This layout consist of 2 `TextView` views which hold the title and the extract (definition) of the search result. It looks like that:
     ![wiki_layout](https://user-images.githubusercontent.com/14614396/42425133-ef2f899c-8320-11e8-8088-9cb197c1fcec.png)
 
     
@@ -220,13 +220,13 @@ We will now demonstrate how to add a new search provider to the app. For this pr
     ```
     
     Let's take a look at the important things in here:
-    * If you've already used [RecyclerView](https://developer.android.com/guide/topics/ui/layout/recyclerview) before, you may see that the `MyViewHolder` class is a standard `ViewHolder` that is used to connect to the layout we have just created.
+    * If you've already used [RecyclerView](https://developer.android.com/guide/topics/ui/layout/recyclerview) before, you may see that the `MyViewHolder` class is a standard `ViewHolder`.
     * Create a `WikipediaTermAdapter` constructor that calls its super class constructor.
     * Override the method `InnerTermViewHolder` as shown. This way, we make sure that the super class gets the correct `MyViewHolder` class.
-    * Implement the abstract method `setDefinitionLayout`. This method sets the layput as you wish. Not that we take the method's parameters and downcast them to the classes we have just created. It's your responsibility to make sure that you make the correct cast.
-    * Implement the abstract method `createResultsObject` which uses [Gson](https://github.com/google/gson) to convert our json response to our java objects.
-    * Implement the abstract method `getDefinitionLayoutId` which return the appropriate layout id.
-    * If you wish to add an icon to your card result, override the method `getIconDrawable`. If you won't not icon will be shown.
+    * Implement the abstract method `setDefinitionLayout`. This method sets the layout as you wish. Note that we take the method's parameters and downcast them to the classes we have just created. It's your responsibility to perform the correct cast.
+    * Implement the abstract method `createResultsObject` which uses [Gson](https://github.com/google/gson) to convert the json response to our java objects.
+    * Implement the abstract method `getDefinitionLayoutId` which returns the appropriate layout id.
+    * If you wish to add an icon to your card result, override the method `getIconDrawable`. If you won't, no icon will be shown.
         
 
 7) Go to `TermAdapterFactory` class under `Adapters` package, and add the adapter we have just created to the factory:
@@ -244,7 +244,7 @@ We will now demonstrate how to add a new search provider to the app. For this pr
     And that's it.
 
 ### Remove Dictionaries
-To remove search providers Go to `ApiConsts` class under `ApiClients` package, and remove the unwanted providers from the array `SEARCH_PROVIDERS`:
+To remove search providers go to `ApiConsts` class under `ApiClients` package, and remove the unwanted providers from the array `SEARCH_PROVIDERS`:
 ```java
       public static final String[] SEARCH_PROVIDERS = {
            DICTIONARY_IMAGES,
@@ -256,7 +256,7 @@ To remove search providers Go to `ApiConsts` class under `ApiClients` package, a
  ```
  Now only images, wikipedia and urban dictionary are available throughout the app.
          
-## Authors
+## Author
 
 **Evyatar Ben-Shitrit** - [eviabs](https://github.com/eviabs)
 
