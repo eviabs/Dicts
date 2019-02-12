@@ -1,3 +1,6 @@
+[![Analytics](https://ga-beacon.appspot.com/UA-121798497-2/github/eviabs/Dicts)](https://github.com/igrigorik/ga-beacon)
+[![Is this project still maintained?](https://img.shields.io/badge/maintained%3F-yes-green.svg?style=plastic)](https://github.com/badges/shields)
+
 # Dicts
 Android app that shows results from several search providers.
 
@@ -263,5 +266,3 @@ To remove search providers go to `ApiConsts` class under `ApiClients` package, a
 ## License
 
 This project is licensed under the MIT License.
-
-[![Analytics](https://ga-beacon.appspot.com/UA-121798497-2/github/eviabs/Dicts)](https://github.com/igrigorik/ga-beacon)
